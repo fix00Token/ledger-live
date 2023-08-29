@@ -230,8 +230,8 @@ importers:
         specifier: ^4.6.3
         version: 4.6.3
       '@electron/remote':
-        specifier: ^2
-        version: 2.0.8(electron@26.2.1)
+        specifier: ^2.0.10
+        version: 2.0.11(electron@26.2.1)
       '@ledgerhq/coin-evm':
         specifier: workspace:^
         version: link:../../libs/coin-evm
@@ -501,8 +501,8 @@ importers:
         version: 4.4.2
     devDependencies:
       '@electron/notarize':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.1.0
+        version: 2.1.0
       '@jest/globals':
         specifier: ^29.6.2
         version: 29.6.2
@@ -12147,16 +12147,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@electron/notarize@2.0.0:
-    resolution: {integrity: sha512-dqDpd2YCgl6PHJgXEuKGYH3+L4GIGV7ZbKYJjJv66ed+hVPxZA+GAL5JH8/hCnoyQa8WzJTzqd+qhiL5Oxr+SA==}
-    engines: {node: '>= 10.0.0'}
-    dependencies:
-      debug: 4.3.4
-      fs-extra: 9.1.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /@electron/notarize@2.1.0:
     resolution: {integrity: sha512-Q02xem1D0sg4v437xHgmBLxI2iz/fc0D4K7fiVWHa/AnW8o7D751xyKNXgziA6HrTOme9ul1JfWN5ark8WH1xA==}
     engines: {node: '>= 10.0.0'}
@@ -12183,8 +12173,8 @@ packages:
       - supports-color
     dev: true
 
-  /@electron/remote@2.0.8(electron@26.2.1):
-    resolution: {integrity: sha512-P10v3+iFCIvEPeYzTWWGwwHmqWnjoh8RYnbtZAb3RlQefy4guagzIwcWtfftABIfm6JJTNQf4WPSKWZOpLmHXw==}
+  /@electron/remote@2.0.11(electron@26.2.1):
+    resolution: {integrity: sha512-PYEs7W3GrQNuhgiMHjFEvL5MbAL6C7m1AwSAHGqC+xc33IdP7rcGtJSdTP2eg1ssyB3oI00KwTsiSlsQbAoXpA==}
     peerDependencies:
       electron: '>= 13.0.0'
     dependencies:
@@ -39495,7 +39485,7 @@ packages:
       jest-util: 29.6.2
       jest-validate: 29.6.2
       prompts: 2.4.2
-      yargs: 17.5.1
+      yargs: 17.7.2
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros

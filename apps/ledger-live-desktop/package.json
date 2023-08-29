@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@braze/web-sdk": "^4.6.3",
-    "@electron/remote": "^2",
+    "@electron/remote": "^2.0.10",
     "@ledgerhq/coin-evm": "workspace:^",
     "@ledgerhq/coin-framework": "workspace:^",
     "@ledgerhq/devices": "workspace:^",
@@ -137,7 +137,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@electron/notarize": "^2.0.0",
+    "@electron/notarize": "^2.1.0",
     "@jest/globals": "^29.6.2",
     "@ledgerhq/react-devtools": "workspace:^",
     "@ledgerhq/test-utils": "workspace:^",
