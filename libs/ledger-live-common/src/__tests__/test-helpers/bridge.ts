@@ -716,17 +716,18 @@ export function testBridge<T extends TransactionCommon>(data: DatasetTest<T>): v
                   const deviceId = await mockDeviceWithAPDUs(apdus);
 
                   try {
-                    const signedOperation = await bridge
-                      .signOperation({
-                        account,
-                        deviceId,
-                        transaction: t,
-                      })
-                      .pipe(
-                        filter(e => e.type === "signed"),
-                        map((e: any) => e.signedOperation),
-                      )
-                      .toPromise();
+                    const signedOperation = await firstValueFrom(
+                      bridge
+                        .signOperation({
+                          account,
+                          deviceId,
+                          transaction: t,
+                        })
+                        .pipe(
+                          filter(e => e.type === "signed"),
+                          map((e: any) => e.signedOperation),
+                        ),
+                    );
 
                     if (testSignedOperation) {
                       await testSignedOperation(expect, signedOperation, account, t, s, bridge);

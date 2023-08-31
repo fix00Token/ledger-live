@@ -544,29 +544,30 @@ export async function runOnAccount<T extends Transaction>({
     mutationsCount[mutation.name] = (mutationsCount[mutation.name] || 0) + 1;
     // sign the transaction with speculos
     log("engine", `spec ${spec.name}/${account.name} signing`);
-    const signedOperation = await accountBridge
-      .signOperation({
-        account,
-        transaction,
-        deviceId: device.id,
-      })
-      .pipe(
-        tap(e => {
-          latestSignOperationEvent = e;
-          log("engine", `spec ${spec.name}/${account.name}: ${e.type}`);
-        }),
-        autoSignTransaction({
-          transport: device.transport,
-          deviceAction: mutation.deviceAction || spec.genericDeviceAction,
-          appCandidate,
+    const signedOperation = await firstValueFrom(
+      accountBridge
+        .signOperation({
           account,
           transaction,
-          status,
-        }),
-        first((e: any) => e.type === "signed"),
-        map(e => (invariant(e.type === "signed", "signed operation"), e.signedOperation)),
-      )
-      .toPromise();
+          deviceId: device.id,
+        })
+        .pipe(
+          tap(e => {
+            latestSignOperationEvent = e;
+            log("engine", `spec ${spec.name}/${account.name}: ${e.type}`);
+          }),
+          autoSignTransaction({
+            transport: device.transport,
+            deviceAction: mutation.deviceAction || spec.genericDeviceAction,
+            appCandidate,
+            account,
+            transaction,
+            status,
+          }),
+          first((e: any) => e.type === "signed"),
+          map(e => (invariant(e.type === "signed", "signed operation"), e.signedOperation)),
+        ),
+    );
     deepFreezeSignedOperation(signedOperation);
 
     report.signedOperation = signedOperation;

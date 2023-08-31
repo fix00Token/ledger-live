@@ -336,10 +336,10 @@ scenarios.forEach((scenario) => {
       state = (<any[]>[]).concat(action.dispatch).reduce(reducer, state);
       expect(prettyActionPlan(getActionPlan(state))).toBe(action.expectPlan);
       const optimisticState = predictOptimisticState(state);
-      state = await runAll(
+      state = await firstValueFrom(runAll(
         state,
         mockExecWithInstalledContext(state.installed)
-      ).toPromise();
+      ));
 
       if (action.expectInstalled) {
         expect(prettyInstalled(state.installed)).toBe(action.expectInstalled);

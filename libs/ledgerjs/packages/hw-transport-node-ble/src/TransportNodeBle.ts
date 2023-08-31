@@ -54,7 +54,7 @@ async function open(deviceOrId: Device | string, needsReconnect: boolean) {
     throw new CantOpenDevice();
   }
 
-  await availability.pipe(first(enabled => enabled)).toPromise();
+  await firstValueFrom(availability.pipe(first(enabled => enabled)));
 
   if (isDeviceDisconnected(device)) {
     log("ble-verbose", "not connected. connecting...");

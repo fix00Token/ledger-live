@@ -83,17 +83,18 @@ mockedCoins.map(getCryptoCurrencyById).forEach(currency => {
           errors: {},
           warnings: {},
         });
-        const signedOperation = await bridge
-          .signOperation({
-            account: first,
-            transaction: t,
-            deviceId: "",
-          })
-          .pipe(
-            filter(e => e.type === "signed"),
-            map((e: any) => e.signedOperation),
-          )
-          .toPromise();
+        const signedOperation = await firstValueFrom(
+          bridge
+            .signOperation({
+              account: first,
+              transaction: t,
+              deviceId: "",
+            })
+            .pipe(
+              filter(e => e.type === "signed"),
+              map((e: any) => e.signedOperation),
+            ),
+        );
         expect(signedOperation.operation).toBeDefined();
         const operation = await bridge.broadcast({
           account: first,
