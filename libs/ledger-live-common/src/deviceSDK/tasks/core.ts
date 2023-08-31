@@ -60,7 +60,7 @@ export function sharedLogicTaskWrapper<TaskArgsType, TaskEventsType>(
                   acceptedError = true;
                 }
 
-                return acceptedError ? timer(RETRY_ON_ERROR_DELAY_MS) : throwError(error);
+                return acceptedError ? timer(RETRY_ON_ERROR_DELAY_MS) : throwError(() => error);
               }),
             ),
           ),
@@ -166,7 +166,7 @@ export function retryOnErrorsCommandWrapper<CommandArgsWithoutTransportType, Com
             }
 
             // If the error is not part of the allowed errors, it is thrown
-            return throwError(error);
+            return throwError(() => error);
           }),
         ),
       ),

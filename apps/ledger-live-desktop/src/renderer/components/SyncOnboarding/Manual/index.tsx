@@ -19,7 +19,7 @@ import { withDevice } from "@ledgerhq/live-common/hw/deviceAccess";
 import { DeviceInfo } from "@ledgerhq/types-live";
 import connectManager from "@ledgerhq/live-common/hw/connectManager";
 import { mockedEventEmitter } from "~/renderer/components/debug/DebugMock";
-import { from } from "rxjs";
+import { firstValueFrom, from } from "rxjs";
 import getDeviceInfo from "@ledgerhq/live-common/hw/getDeviceInfo";
 import { getEnv } from "@ledgerhq/live-env";
 import ExitChecksDrawer, {
@@ -102,11 +102,11 @@ const SyncOnboardingScreen: React.FC<SyncOnboardingScreenProps> = ({
 
   const refreshIsBootloaderMode = useCallback(() => {
     if (!device) return;
-    withDevice(device.deviceId)(transport => from(getDeviceInfo(transport)))
-      .toPromise()
-      .then((deviceInfo: DeviceInfo) => {
+    firstValueFrom(withDevice(device.deviceId)(transport => from(getDeviceInfo(transport)))).then(
+      (deviceInfo: DeviceInfo) => {
         setIsBootloader(deviceInfo?.isBootloader);
-      });
+      },
+    );
   }, [device]);
 
   useEffect(() => {

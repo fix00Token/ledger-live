@@ -91,7 +91,7 @@ export default {
               first(),
               timeoutWith(
                 getEnv("BOT_TIMEOUT_SCAN_ACCOUNTS"),
-                throwError(new Error("scan account timeout")),
+                throwError(() => new Error("scan account timeout")),
               ),
               map(e => e.account.freshAddress),
               catchError(err => {
@@ -132,7 +132,7 @@ export default {
             .pipe(
               timeoutWith(
                 getEnv("BOT_TIMEOUT_SCAN_ACCOUNTS"),
-                throwError(new Error("scan account timeout")),
+                throwError(() => new Error("scan account timeout")),
               ),
               catchError(e => {
                 console.error("scan accounts failed for " + currency.id, e);

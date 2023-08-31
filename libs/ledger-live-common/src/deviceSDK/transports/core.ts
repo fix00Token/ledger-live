@@ -219,11 +219,11 @@ const transportFinally =
     });
 
 const initialErrorRemapping = error => {
-  return throwError(
+  return throwError(() =>
     error &&
-      error instanceof TransportStatusError &&
-      // @ts-expect-error typescript not checking agains the instanceof
-      error.statusCode === 0x6faa
+    error instanceof TransportStatusError &&
+    // @ts-expect-error typescript not checking agains the instanceof
+    error.statusCode === 0x6faa
       ? new DeviceHalted(error.message)
       : error.statusCode === 0x6b00
       ? new FirmwareOrAppUpdateRequired(error.message)
@@ -231,7 +231,7 @@ const initialErrorRemapping = error => {
   );
 };
 
-let errorRemapping = e => throwError(e);
+let errorRemapping = e => throwError(() => e);
 export const setErrorRemapping = (f: (arg0: Error) => Observable<never>): void => {
   errorRemapping = f;
 };

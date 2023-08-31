@@ -29,7 +29,10 @@ export default {
               },
             })
             .pipe(
-              timeoutWith(200 * 1000, throwError(new Error("scan account timeout"))),
+              timeoutWith(
+                200 * 1000,
+                throwError(() => new Error("scan account timeout")),
+              ),
               catchError(e => {
                 console.error("scan accounts failed for " + currency.id, e);
                 return from([]);

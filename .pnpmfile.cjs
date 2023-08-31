@@ -189,9 +189,6 @@ function readPackage(pkg, context) {
       addPeerDependencies("any-observable", {
         rxjs: "*",
       }),
-      // addPeerDependencies("rxjs-compat", {
-      //   rxjs: "*",
-      // }),
       addPeerDependencies("@cspotcode/source-map-support", {
         "source-map-support": "*",
       }),
