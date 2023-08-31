@@ -1079,9 +1079,6 @@ importers:
       rxjs:
         specifier: ^6.6.6
         version: 6.6.7
-      rxjs-compat:
-        specifier: ^6.6.6
-        version: 6.6.7(rxjs@6.6.7)
       rxjs7:
         specifier: npm:rxjs@7.8.1
         version: /rxjs@7.8.1
@@ -2341,11 +2338,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       rxjs:
-        specifier: '6'
-        version: 6.6.7
-      rxjs-compat:
         specifier: ^6.6.7
-        version: 6.6.7(rxjs@6.6.7)
+        version: 6.6.7
       rxjs7:
         specifier: npm:rxjs@7.8.1
         version: /rxjs@7.8.1
@@ -2608,7 +2602,7 @@ importers:
         specifier: workspace:^
         version: link:../logs
       rxjs:
-        specifier: '6'
+        specifier: ^6.6.7
         version: 6.6.7
       semver:
         specifier: ^7.3.5
@@ -3962,7 +3956,7 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       rxjs:
-        specifier: '6'
+        specifier: ^6.6.7
         version: 6.6.7
       uuid:
         specifier: ^3.4.0
@@ -28053,7 +28047,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.5(react-is@18.1.0)(react@18.0.0)
+      styled-components: 5.3.5(react-dom@17.0.2)(react-is@17.0.2)(react@17.0.2)
 
   /babel-plugin-syntax-jsx@6.18.0:
     resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
@@ -53646,17 +53640,6 @@ packages:
     resolution: {integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==}
     dev: false
 
-  /rxjs-compat@6.6.7(rxjs@6.6.7):
-    resolution: {integrity: sha512-szN4fK+TqBPOFBcBcsR0g2cmTTUF/vaFEOZNuSdfU8/pGFnNmmn2u8SystYXG1QMrjOPBc6XTKHMVfENDf6hHw==}
-    peerDependencies:
-      rxjs: '*'
-    peerDependenciesMeta:
-      rxjs:
-        optional: true
-    dependencies:
-      rxjs: 6.6.7
-    dev: false
-
   /rxjs@6.6.7:
     resolution: {integrity: sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==}
     engines: {npm: '>=2.0.0'}
@@ -55456,6 +55439,7 @@ packages:
       react-is: 18.1.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
+    dev: false
 
   /styled-components@6.0.7(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-xIwWuiRMYR43mskVsW9MGTRjSo7ol4bcVjT595fGUp3OLBJOlOgaiKaxsHdC4a2HqWKqKnh0CmcRbk5ogyDjTg==}
