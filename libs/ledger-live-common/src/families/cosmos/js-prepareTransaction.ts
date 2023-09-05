@@ -50,8 +50,8 @@ export const getEstimatedFees = async (
   account: CosmosAccount,
   transaction: Transaction,
 ): Promise<{ estimatedFees: BigNumber; estimatedGas: BigNumber }> => {
-  const cosmosCurrency = cryptoFactory(account.currency.id);
-  let estimatedGas = new BigNumber(cosmosCurrency.defaultGas);
+  const chainInstance = cryptoFactory(account.currency.id);
+  let estimatedGas = new BigNumber(chainInstance.defaultGas);
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
   const unsignedPayload: { typeUrl: string; value: any }[] = await buildUnsignedPayloadTransaction(
@@ -61,12 +61,13 @@ export const getEstimatedFees = async (
 
   if (unsignedPayload && unsignedPayload.length > 0) {
     const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
+    const { pubKeyType } = await cosmosAPI.getAccount(account.freshAddress);
 
     // see https://github.com/cosmos/cosmjs/blob/main/packages/proto-signing/src/pubkey.spec.ts
     const prefix = new Uint8Array([10, 33]);
 
     const pubkey = {
-      typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+      typeUrl: pubKeyType,
       value: new Uint8Array([...prefix, ...signature]),
     };
 
@@ -90,7 +91,7 @@ export const getEstimatedFees = async (
   }
 
   const estimatedFees = estimatedGas
-    .times(cosmosCurrency.minGasPrice)
+    .times(chainInstance.minGasPrice)
     .integerValue(BigNumber.ROUND_CEIL);
 
   return { estimatedFees, estimatedGas };

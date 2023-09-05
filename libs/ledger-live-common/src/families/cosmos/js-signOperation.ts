@@ -6,11 +6,13 @@ import { LedgerSigner } from "@cosmjs/ledger-amino";
 import { stringToPath } from "@cosmjs/crypto";
 import { buildTransaction, postBuildTransaction } from "./js-buildTransaction";
 import BigNumber from "bignumber.js";
-import { makeSignDoc } from "@cosmjs/launchpad";
-
+import { AminoSignResponse, makeSignDoc, StdSignDoc } from "@cosmjs/launchpad";
 import type { Operation, OperationType, SignOperationFnSignature } from "@ledgerhq/types-live";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
+import { sortObjectKeysDeeply } from "./helpers";
+import { HdPath, Secp256k1Signature } from "@cosmjs/crypto";
+import { CosmosApp } from "@zondax/ledger-cosmos-js";
 
 const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceId, transaction }) =>
   withDevice(deviceId)(
@@ -20,7 +22,10 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
 
         async function main() {
           const cosmosAPI = new CosmosAPI(account.currency.id);
-          const { accountNumber, sequence } = await cosmosAPI.getAccount(account.freshAddress);
+          const { accountNumber, sequence, pubKeyType } = await cosmosAPI.getAccount(
+            account.freshAddress,
+          );
+          const chainInstance = cryptoFactory(account.currency.id);
           o.next({ type: "device-signature-requested" });
           const { aminoMsgs, protoMsgs } = await buildTransaction(account, transaction);
           if (!transaction.gas) {
@@ -42,7 +47,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           // Cosmos Nano App sign data in Amino way only, not Protobuf.
           // This is a legacy outdated standard and a long-term blocking point.
           const chainId = await cosmosAPI.getChainId();
-          const signDoc = makeSignDoc(
+          let signDoc = makeSignDoc(
             aminoMsgs,
             feeToEncode,
             chainId,
@@ -50,12 +55,31 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             accountNumber.toString(),
             sequence.toString(),
           );
-          const ledgerSigner = new LedgerSigner(transport, {
-            hdPaths: [stringToPath("m/" + account.freshAddressPath)],
-            prefix: cryptoFactory(account.currency.id).prefix,
-          });
+          signDoc = sortObjectKeysDeeply(signDoc) as StdSignDoc;
+          const tx = Buffer.from(JSON.stringify(signDoc), "utf-8");
+          const app = new CosmosApp(transport);
+          const path = account.freshAddressPath.split("/").map(p => parseInt(p.replace("'", "")));
 
-          const signResponse = await ledgerSigner.signAmino(account.freshAddress, signDoc);
+          const resp_add = await app.getAddressAndPubKey(path, chainInstance.prefix);
+
+          const signResponseApp =
+            path[1] === 60
+              ? await app.sign(path, tx, chainInstance.prefix)
+              : await app.sign(path, tx);
+
+          const signResponse: AminoSignResponse = {
+            signed: signDoc,
+            signature: {
+              pub_key: {
+                value: Buffer.from(resp_add.compressed_pk).toString("base64"),
+                type: pubKeyType,
+              },
+              signature: Buffer.from(
+                Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
+              ).toString("base64"),
+            },
+          };
+
           const tx_bytes = await postBuildTransaction(signResponse, protoMsgs);
           const signed = Buffer.from(tx_bytes).toString("hex");
 
@@ -128,6 +152,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             signedOperation: {
               operation,
               signature: signed,
+              expirationDate: undefined,
             },
           });
         }

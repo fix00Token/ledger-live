@@ -71,10 +71,14 @@ export class CosmosAPI {
     }
   };
 
-  getAccount = async (address: string): Promise<{ accountNumber: number; sequence: number }> => {
-    const response = {
+  getAccount = async (
+    address: string,
+  ): Promise<{ accountNumber: number; sequence: number; pubKeyType: string; pubKey: string }> => {
+    const accountData = {
       accountNumber: 0,
       sequence: 0,
+      pubKeyType: "/cosmos.crypto.secp256k1.PubKey",
+      pubKey: "",
     };
 
     try {
@@ -83,16 +87,26 @@ export class CosmosAPI {
         url: `${this.defaultEndpoint}/cosmos/auth/${this.version}/accounts/${address}`,
       });
 
-      if (data.account.account_number) {
-        response.accountNumber = parseInt(data.account.account_number);
+      const srcAccount =
+        data.account.base_account != null ? data.account.base_account : data.account;
+
+      if (srcAccount.account_number) {
+        accountData.accountNumber = parseInt(srcAccount.account_number);
       }
 
-      if (data.account.sequence) {
-        response.sequence = parseInt(data.account.sequence);
+      if (srcAccount.sequence) {
+        accountData.sequence = parseInt(srcAccount.sequence);
       }
-      // eslint-disable-next-line no-empty
-    } catch (e) {}
-    return response;
+
+      if (srcAccount.pub_key) {
+        accountData.pubKey = srcAccount.pub_key.key;
+        accountData.pubKeyType = srcAccount.pub_key["@type"];
+      }
+    } catch (e) {
+      console.log("Could not fetch account info, using default values instead");
+    }
+
+    return accountData;
   };
 
   getChainId = async (): Promise<string> => {

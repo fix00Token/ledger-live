@@ -25,6 +25,7 @@ import { Coin } from "@keplr-wallet/proto-types/cosmos/base/v1beta1/coin";
 import BigNumber from "bignumber.js";
 import { EncodeObject, GeneratedType, makeAuthInfoBytes, Registry } from "@cosmjs/proto-signing";
 import { CosmosAPI } from "./api/Cosmos";
+import cryptoFactory from "./chain/chain";
 
 type ProtoMsg = {
   typeUrl: string;
@@ -424,7 +425,7 @@ export const postBuildTransaction = async (
   signResponse: AminoSignResponse,
   protoMsgs: Array<ProtoMsg>,
 ): Promise<Uint8Array> => {
-  const signed_tx_bytes = TxRaw.encode({
+  const signedTx = TxRaw.encode({
     bodyBytes: TxBody.encode(
       TxBody.fromPartial({
         messages: protoMsgs,
@@ -438,7 +439,7 @@ export const postBuildTransaction = async (
       signerInfos: [
         {
           publicKey: {
-            typeUrl: "/cosmos.crypto.secp256k1.PubKey",
+            typeUrl: signResponse.signature.pub_key.type,
             value: PubKey.encode({
               key: Buffer.from(signResponse.signature.pub_key.value, "base64"),
             }).finish(),
@@ -462,7 +463,7 @@ export const postBuildTransaction = async (
     signatures: [Buffer.from(signResponse.signature.signature, "base64")],
   }).finish();
 
-  return signed_tx_bytes;
+  return signedTx;
 };
 
 export const postBuildUnsignedPayloadTransaction = async (
