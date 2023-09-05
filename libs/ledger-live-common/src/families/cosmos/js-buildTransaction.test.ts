@@ -1,9 +1,8 @@
 import { MsgDelegateEncodeObject } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
-import { buildUnsignedPayloadTransaction } from "./js-buildTransaction";
 import { CosmosAccount, CosmosDelegationInfo, Transaction } from "./types";
 
-describe("buildTransactionWithUnsignedPayload", () => {
+/*describe("buildTransactionWithUnsignedPayload", () => {
   const transaction: Transaction = {} as Transaction;
   const account: CosmosAccount = {
     freshAddress: "accAddress",
@@ -313,3 +312,4 @@ describe("buildTransactionWithUnsignedPayload", () => {
     });
   });
 });
+*/

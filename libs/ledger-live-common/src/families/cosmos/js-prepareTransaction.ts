@@ -5,10 +5,7 @@ import BigNumber from "bignumber.js";
 import { getEnv } from "@ledgerhq/live-env";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
-import {
-  buildUnsignedPayloadTransaction,
-  postBuildUnsignedPayloadTransaction,
-} from "./js-buildTransaction";
+import buildTransaction, { postBuildUnsignedPayloadTransaction } from "./js-buildTransaction";
 import { getMaxEstimatedBalance } from "./logic";
 import { CosmosAccount, Transaction } from "./types";
 
@@ -54,12 +51,9 @@ export const getEstimatedFees = async (
   let estimatedGas = new BigNumber(chainInstance.defaultGas);
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
-  const unsignedPayload: { typeUrl: string; value: any }[] = await buildUnsignedPayloadTransaction(
-    account,
-    transaction,
-  );
+  const { protoMsgs } = await buildTransaction(account, transaction);
 
-  if (unsignedPayload && unsignedPayload.length > 0) {
+  if (protoMsgs && protoMsgs.length > 0) {
     const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
     const { pubKeyType } = await cosmosAPI.getAccount(account.freshAddress);
 
@@ -75,9 +69,10 @@ export const getEstimatedFees = async (
       account,
       transaction,
       pubkey,
-      unsignedPayload,
+      protoMsgs,
       signature,
     );
+
     try {
       const gasUsed = await cosmosAPI.simulate(tx_bytes);
       estimatedGas = gasUsed
