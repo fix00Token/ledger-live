@@ -14,25 +14,26 @@ export const getMainMessage = (messages: CosmosMessage[]): CosmosMessage => {
   return sortedTypes[0];
 };
 
-const order = unordered =>
-  Object.keys(unordered)
-    .sort()
-    .reduce((obj, key) => {
-      obj[key] = unordered[key];
-      return obj;
-    }, {});
+export const sortObjectKeysDeeply = src => {
+  let out;
 
-export const sortObjectKeysDeeply = object => {
-  for (let [key, value] of Object.entries(object)) {
-    if (Array.isArray(value)) {
-      const newArray = new Array();
-      for (const element of value) {
-        newArray.push(sortObjectKeysDeeply(element));
-      }
-      object[key] = newArray;
-    } else if (typeof value === "object") {
-      object[key] = sortObjectKeysDeeply(value);
-    }
+  if (Array.isArray(src)) {
+    return src.map(function (item) {
+      return sortObjectKeysDeeply(item);
+    });
   }
-  return order(object);
+
+  if (typeof src === "object") {
+    out = {};
+
+    Object.keys(src)
+      .sort((a, b) => a.localeCompare(b))
+      .forEach(function (key) {
+        out[key] = sortObjectKeysDeeply(src[key]);
+      });
+
+    return out;
+  }
+
+  return src;
 };

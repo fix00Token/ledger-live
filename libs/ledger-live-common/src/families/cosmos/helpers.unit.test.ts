@@ -1,4 +1,4 @@
-import { getMainMessage } from "./helpers";
+import { getMainMessage, sortObjectKeysDeeply } from "./helpers";
 import { parseAmountStringToNumber } from "./logic";
 
 describe("getMainMessage", () => {
@@ -74,5 +74,60 @@ describe("parseAmountStringToNumber", () => {
         "uatom",
       ),
     ).toEqual("10000");
+  });
+});
+
+describe("sortObjectKeysDeeply", () => {
+  it("should sort object keys on one level", () => {
+    const unsorted = { b: "value", a: 1 };
+    const sorted = sortObjectKeysDeeply(unsorted);
+    expect(Object.keys(sorted)[0]).toEqual("a");
+    expect(Object.keys(sorted)[1]).toEqual("b");
+  });
+
+  it("should not ruin already sorted object", () => {
+    const alreadySorted = { a: undefined, b: 1 };
+    const sorted = sortObjectKeysDeeply(alreadySorted);
+    expect(Object.keys(sorted)[0]).toEqual("a");
+    expect(Object.keys(sorted)[1]).toEqual("b");
+  });
+
+  it("should sort on multiple levels", () => {
+    const unsorted = {
+      b: undefined,
+      a: {
+        d: "val",
+        c: [],
+      },
+    };
+    const sorted = sortObjectKeysDeeply(unsorted);
+    expect(Object.keys(sorted)[0]).toEqual("a");
+    expect(Object.keys(sorted)[1]).toEqual("b");
+    const child = sorted["a"];
+    expect(Object.keys(child)[0]).toEqual("c");
+    expect(Object.keys(child)[1]).toEqual("d");
+  });
+
+  it("should not change array order", () => {
+    const objectWithArray = {
+      arr: [2, 1],
+    };
+    const sorted = sortObjectKeysDeeply(objectWithArray);
+    const array = sorted["arr"] as Array<number>;
+
+    expect(array[0]).toEqual(2);
+    expect(array[1]).toEqual(1);
+  });
+
+  it("should sort array items", () => {
+    const objectWithArray = {
+      arr: [{ b: undefined, a: "value" }, 1],
+    };
+    const sorted = sortObjectKeysDeeply(objectWithArray);
+    const array = sorted["arr"] as Array<number>;
+    const elementInArrayKeys = Object.keys(array[0]);
+
+    expect(elementInArrayKeys[0]).toEqual("a");
+    expect(elementInArrayKeys[1]).toEqual("b");
   });
 });
