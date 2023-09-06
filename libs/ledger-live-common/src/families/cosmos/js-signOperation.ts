@@ -4,7 +4,7 @@ import { withDevice } from "../../hw/deviceAccess";
 import { encodeOperationId } from "../../operation";
 import { txToMessages, buildTransaction } from "./js-buildTransaction";
 import BigNumber from "bignumber.js";
-import { AminoSignResponse, makeSignDoc, StdSignDoc } from "@cosmjs/launchpad";
+import { makeSignDoc, StdSignDoc } from "@cosmjs/launchpad";
 import type { Operation, OperationType, SignOperationFnSignature } from "@ledgerhq/types-live";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
@@ -55,17 +55,19 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           );
           signDoc = sortObjectKeysDeeply(signDoc) as StdSignDoc;
           const tx = Buffer.from(JSON.stringify(signDoc), "utf-8");
+
           const app = new CosmosApp(transport);
+
           const path = account.freshAddressPath.split("/").map(p => parseInt(p.replace("'", "")));
 
-          const resp_add = await app.getAddressAndPubKey(path, chainInstance.prefix);
+          const { compressed_pk } = await app.getAddressAndPubKey(path, chainInstance.prefix);
 
           const signResponseApp =
             path[1] === 60
               ? await app.sign(path, tx, chainInstance.prefix)
               : await app.sign(path, tx);
 
-          const pubKey = Buffer.from(resp_add.compressed_pk).toString("base64");
+          const pubKey = Buffer.from(compressed_pk).toString("base64");
           const signature = Buffer.from(
             Buffer.from(
               Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
