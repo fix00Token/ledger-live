@@ -89,8 +89,7 @@ export class CosmosAPI {
       });
 
       // We use base_account for Ethermint chains and account for the rest
-      const srcAccount =
-        data.account.base_account != null ? data.account.base_account : data.account;
+      const srcAccount = data.account.base_account || data.account;
 
       if (srcAccount.account_number) {
         accountData.accountNumber = parseInt(srcAccount.account_number);
@@ -105,7 +104,9 @@ export class CosmosAPI {
         accountData.pubKeyType = srcAccount.pub_key["@type"];
       }
     } catch (e) {
-      log("Could not fetch account info, using default values instead");
+      log(
+        "Could not fetch account info, account might have never been used, using default values instead",
+      );
     }
 
     return accountData;
