@@ -1,4 +1,5 @@
 import network from "@ledgerhq/live-network/network";
+import { log } from "@ledgerhq/logs";
 import { CryptoCurrency } from "@ledgerhq/types-cryptoassets";
 import { Operation } from "@ledgerhq/types-live";
 import BigNumber from "bignumber.js";
@@ -87,6 +88,7 @@ export class CosmosAPI {
         url: `${this.defaultEndpoint}/cosmos/auth/${this.version}/accounts/${address}`,
       });
 
+      // We use base_account for Ethermint chains and account for the rest
       const srcAccount =
         data.account.base_account != null ? data.account.base_account : data.account;
 
@@ -103,7 +105,7 @@ export class CosmosAPI {
         accountData.pubKeyType = srcAccount.pub_key["@type"];
       }
     } catch (e) {
-      console.log("Could not fetch account info, using default values instead");
+      log("Could not fetch account info, using default values instead");
     }
 
     return accountData;

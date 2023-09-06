@@ -56,21 +56,21 @@ export const getEstimatedFees = async (
   const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
 
   if (protoMsgs && protoMsgs.length > 0) {
-    const tx_bytes = await buildTransaction(
+    const txBytes = await buildTransaction({
       protoMsgs,
-      transaction.memo || "",
+      memo: transaction.memo || "",
       pubKeyType,
       pubKey,
-      undefined,
-      undefined,
-      sequence + "",
+      feeAmount: undefined,
+      gasLimit: undefined,
+      sequence: String(sequence),
       signature,
-    );
+    });
 
-    const toSimulate = Array.from(Uint8Array.from(tx_bytes));
+    const txToSimulate = Array.from(Uint8Array.from(txBytes));
 
     try {
-      const gasUsed = await cosmosAPI.simulate(toSimulate);
+      const gasUsed = await cosmosAPI.simulate(txToSimulate);
       estimatedGas = gasUsed
         .multipliedBy(new BigNumber(getEnv("COSMOS_GAS_AMPLIFIER")))
         .integerValue(BigNumber.ROUND_CEIL);

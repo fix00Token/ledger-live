@@ -9,7 +9,7 @@ import type { Operation, OperationType, SignOperationFnSignature } from "@ledger
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
 import { sortObjectKeysDeeply } from "./helpers";
-import { HdPath, Secp256k1Signature } from "@cosmjs/crypto";
+import { Secp256k1Signature } from "@cosmjs/crypto";
 import { CosmosApp } from "@zondax/ledger-cosmos-js";
 
 const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceId, transaction }) =>
@@ -45,7 +45,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           // Cosmos Nano App sign data in Amino way only, not Protobuf.
           // This is a legacy outdated standard and a long-term blocking point.
           const chainId = await cosmosAPI.getChainId();
-          let signDoc = makeSignDoc(
+          const signDoc = makeSignDoc(
             aminoMsgs,
             feeToEncode,
             chainId,
@@ -53,37 +53,34 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             accountNumber.toString(),
             sequence.toString(),
           );
-          signDoc = sortObjectKeysDeeply(signDoc) as StdSignDoc;
-          const tx = Buffer.from(JSON.stringify(signDoc), "utf-8");
-
+          const tx = Buffer.from(JSON.stringify(sortObjectKeysDeeply(signDoc)), "utf-8");
           const app = new CosmosApp(transport);
-
           const path = account.freshAddressPath.split("/").map(p => parseInt(p.replace("'", "")));
 
           const { compressed_pk } = await app.getAddressAndPubKey(path, chainInstance.prefix);
+          const pubKey = Buffer.from(compressed_pk).toString("base64");
 
           const signResponseApp =
             path[1] === 60
               ? await app.sign(path, tx, chainInstance.prefix)
               : await app.sign(path, tx);
 
-          const pubKey = Buffer.from(compressed_pk).toString("base64");
           const signature = Buffer.from(
             Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
           );
 
-          const tx_bytes = await buildTransaction(
+          const txBytes = await buildTransaction({
             protoMsgs,
-            transaction.memo || "",
+            memo: transaction.memo || "",
             pubKeyType,
             pubKey,
-            signDoc.fee.amount,
-            signDoc.fee.gas,
-            signDoc.sequence,
+            feeAmount: signDoc.fee.amount,
+            gasLimit: signDoc.fee.gas,
+            sequence: signDoc.sequence,
             signature,
-          );
+          });
 
-          const signed = Buffer.from(tx_bytes).toString("hex");
+          const signed = Buffer.from(txBytes).toString("hex");
 
           if (cancelled) {
             return;
@@ -154,7 +151,6 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             signedOperation: {
               operation,
               signature: signed,
-              expirationDate: undefined,
             },
           });
         }

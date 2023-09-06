@@ -251,16 +251,25 @@ export const txToMessages = async (
   return { aminoMsgs, protoMsgs };
 };
 
-export const buildTransaction = async (
-  protoMsgs: Array<ProtoMsg>,
-  memo: string,
-  pubKeyType: string,
-  pubKey: string,
-  feeAmount: any,
-  gasLimit: any,
-  sequence: string,
-  signature: Uint8Array,
-): Promise<Uint8Array> => {
+export const buildTransaction = async ({
+  protoMsgs,
+  memo,
+  pubKeyType,
+  pubKey,
+  feeAmount,
+  gasLimit,
+  sequence,
+  signature,
+}: {
+  protoMsgs: Array<ProtoMsg>;
+  memo: string;
+  pubKeyType: string;
+  pubKey: string;
+  feeAmount: any;
+  gasLimit: any;
+  sequence: string;
+  signature: Uint8Array;
+}): Promise<Uint8Array> => {
   const signedTx = TxRaw.encode({
     bodyBytes: TxBody.encode(
       TxBody.fromPartial({
