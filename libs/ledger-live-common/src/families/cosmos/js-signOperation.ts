@@ -69,10 +69,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
 
           const pubKey = Buffer.from(compressed_pk).toString("base64");
           const signature = Buffer.from(
-            Buffer.from(
-              Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
-            ).toString("base64"),
-            "base64",
+            Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
           );
 
           const tx_bytes = await buildTransaction(
