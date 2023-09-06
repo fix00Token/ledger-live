@@ -1,4 +1,4 @@
-import { CosmosAccount, Transaction } from "./types";
+import { Transaction } from "./types";
 import {
   MsgDelegate,
   MsgUndelegate,
@@ -8,7 +8,7 @@ import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1b
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Account } from "@ledgerhq/types-live";
-import { AminoMsg, AminoSignResponse } from "@cosmjs/amino";
+import { AminoMsg } from "@cosmjs/amino";
 import {
   AminoMsgSend,
   AminoMsgDelegate,
@@ -21,18 +21,13 @@ import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
 import { AuthInfo, Fee } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import Long from "long";
-import { Coin } from "@keplr-wallet/proto-types/cosmos/base/v1beta1/coin";
-import BigNumber from "bignumber.js";
-import { EncodeObject, GeneratedType, makeAuthInfoBytes, Registry } from "@cosmjs/proto-signing";
-import { CosmosAPI } from "./api/Cosmos";
-import cryptoFactory from "./chain/chain";
 
 type ProtoMsg = {
   typeUrl: string;
   value: Uint8Array;
 };
 
-export const buildTransaction = async (
+export const txToMessages = async (
   account: Account,
   transaction: Transaction,
 ): Promise<{ aminoMsgs: AminoMsg[]; protoMsgs: ProtoMsg[] }> => {
@@ -256,15 +251,21 @@ export const buildTransaction = async (
   return { aminoMsgs, protoMsgs };
 };
 
-export const postBuildTransaction = async (
-  signResponse: AminoSignResponse,
+export const buildTransaction = async (
   protoMsgs: Array<ProtoMsg>,
+  memo: string,
+  pubKeyType: string,
+  pubKey: string,
+  feeAmount: any,
+  gasLimit: any,
+  sequence: string,
+  signature: Uint8Array,
 ): Promise<Uint8Array> => {
   const signedTx = TxRaw.encode({
     bodyBytes: TxBody.encode(
       TxBody.fromPartial({
         messages: protoMsgs,
-        memo: signResponse.signed.memo,
+        memo,
         timeoutHeight: undefined,
         extensionOptions: [],
         nonCriticalExtensionOptions: [],
@@ -274,9 +275,9 @@ export const postBuildTransaction = async (
       signerInfos: [
         {
           publicKey: {
-            typeUrl: signResponse.signature.pub_key.type,
+            typeUrl: pubKeyType,
             value: PubKey.encode({
-              key: Buffer.from(signResponse.signature.pub_key.value, "base64"),
+              key: Buffer.from(pubKey, "base64"),
             }).finish(),
           },
           modeInfo: {
@@ -285,63 +286,16 @@ export const postBuildTransaction = async (
             },
             multi: undefined,
           },
-          sequence: Long.fromString(signResponse.signed.sequence),
+          sequence: Long.fromString(sequence),
         },
       ],
       fee: Fee.fromPartial({
-        amount: signResponse.signed.fee.amount
-          ? (signResponse.signed.fee.amount as Coin[])
-          : undefined,
-        gasLimit: signResponse.signed.fee.gas,
+        amount: feeAmount,
+        gasLimit,
       }),
     }).finish(),
-    signatures: [Buffer.from(signResponse.signature.signature, "base64")],
+    signatures: [signature],
   }).finish();
 
   return signedTx;
 };
-
-export const postBuildUnsignedPayloadTransaction = async (
-  account: CosmosAccount,
-  transaction: Transaction,
-  pubkey: EncodeObject,
-  protoMsgs: EncodeObject[],
-  signature: Uint8Array,
-): Promise<number[]> => {
-  const cosmosAPI = new CosmosAPI(account.currency.id);
-  const { sequence } = await cosmosAPI.getAccount(account.freshAddress);
-
-  const authInfoBytes = makeAuthInfoBytes(
-    [{ pubkey, sequence }],
-    [
-      {
-        amount: transaction.fees?.toString() || new BigNumber(2500).toString(),
-        denom: account.currency.units[1].code,
-      },
-    ],
-    transaction.gas?.toNumber() || new BigNumber(250000).toNumber(),
-    SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
-  );
-
-  const bodyBytes = TxBody.encode(
-    TxBody.fromPartial({
-      messages: protoMsgs,
-      memo: transaction.memo || "",
-      timeoutHeight: undefined,
-      extensionOptions: [],
-      nonCriticalExtensionOptions: [],
-    }),
-  ).finish();
-
-  const txRaw = TxRaw.fromPartial({
-    bodyBytes,
-    authInfoBytes,
-    signatures: [signature],
-  });
-
-  const tx_bytes = Array.from(Uint8Array.from(TxRaw.encode(txRaw).finish()));
-
-  return tx_bytes;
-};
-
-export default buildTransaction;

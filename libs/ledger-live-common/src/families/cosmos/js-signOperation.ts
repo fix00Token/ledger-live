@@ -2,9 +2,7 @@ import type { Transaction } from "./types";
 import { Observable } from "rxjs";
 import { withDevice } from "../../hw/deviceAccess";
 import { encodeOperationId } from "../../operation";
-import { LedgerSigner } from "@cosmjs/ledger-amino";
-import { stringToPath } from "@cosmjs/crypto";
-import { buildTransaction, postBuildTransaction } from "./js-buildTransaction";
+import { txToMessages, buildTransaction } from "./js-buildTransaction";
 import BigNumber from "bignumber.js";
 import { AminoSignResponse, makeSignDoc, StdSignDoc } from "@cosmjs/launchpad";
 import type { Operation, OperationType, SignOperationFnSignature } from "@ledgerhq/types-live";
@@ -27,7 +25,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           );
           const chainInstance = cryptoFactory(account.currency.id);
           o.next({ type: "device-signature-requested" });
-          const { aminoMsgs, protoMsgs } = await buildTransaction(account, transaction);
+          const { aminoMsgs, protoMsgs } = await txToMessages(account, transaction);
           if (!transaction.gas) {
             throw new Error("transaction.gas is missing");
           }
@@ -67,20 +65,25 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
               ? await app.sign(path, tx, chainInstance.prefix)
               : await app.sign(path, tx);
 
-          const signResponse: AminoSignResponse = {
-            signed: signDoc,
-            signature: {
-              pub_key: {
-                value: Buffer.from(resp_add.compressed_pk).toString("base64"),
-                type: pubKeyType,
-              },
-              signature: Buffer.from(
-                Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
-              ).toString("base64"),
-            },
-          };
+          const pubKey = Buffer.from(resp_add.compressed_pk).toString("base64");
+          const signature = Buffer.from(
+            Buffer.from(
+              Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
+            ).toString("base64"),
+            "base64",
+          );
 
-          const tx_bytes = await postBuildTransaction(signResponse, protoMsgs);
+          const tx_bytes = await buildTransaction(
+            protoMsgs,
+            transaction.memo || "",
+            pubKeyType,
+            pubKey,
+            signDoc.fee.amount,
+            signDoc.fee.gas,
+            signDoc.sequence,
+            signature,
+          );
+
           const signed = Buffer.from(tx_bytes).toString("hex");
 
           if (cancelled) {

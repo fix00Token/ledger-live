@@ -5,7 +5,7 @@ import BigNumber from "bignumber.js";
 import { getEnv } from "@ledgerhq/live-env";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
-import buildTransaction, { postBuildUnsignedPayloadTransaction } from "./js-buildTransaction";
+import { txToMessages, buildTransaction } from "./js-buildTransaction";
 import { getMaxEstimatedBalance } from "./logic";
 import { CosmosAccount, Transaction } from "./types";
 
@@ -51,30 +51,26 @@ export const getEstimatedFees = async (
   let estimatedGas = new BigNumber(chainInstance.defaultGas);
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
-  const { protoMsgs } = await buildTransaction(account, transaction);
+  const { protoMsgs } = await txToMessages(account, transaction);
+  const { sequence, pubKeyType, pubKey } = await cosmosAPI.getAccount(account.freshAddress);
+  const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
 
   if (protoMsgs && protoMsgs.length > 0) {
-    const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
-    const { pubKeyType } = await cosmosAPI.getAccount(account.freshAddress);
-
-    // see https://github.com/cosmos/cosmjs/blob/main/packages/proto-signing/src/pubkey.spec.ts
-    const prefix = new Uint8Array([10, 33]);
-
-    const pubkey = {
-      typeUrl: pubKeyType,
-      value: new Uint8Array([...prefix, ...signature]),
-    };
-
-    const tx_bytes = await postBuildUnsignedPayloadTransaction(
-      account,
-      transaction,
-      pubkey,
+    const tx_bytes = await buildTransaction(
       protoMsgs,
+      transaction.memo || "",
+      pubKeyType,
+      pubKey,
+      undefined,
+      undefined,
+      sequence + "",
       signature,
     );
 
+    const toSimulate = Array.from(Uint8Array.from(tx_bytes));
+
     try {
-      const gasUsed = await cosmosAPI.simulate(tx_bytes);
+      const gasUsed = await cosmosAPI.simulate(toSimulate);
       estimatedGas = gasUsed
         .multipliedBy(new BigNumber(getEnv("COSMOS_GAS_AMPLIFIER")))
         .integerValue(BigNumber.ROUND_CEIL);
