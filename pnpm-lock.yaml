@@ -2540,6 +2540,9 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
+      '@types/bs58check':
+        specifier: ^2.1.0
+        version: 2.1.0
       '@types/node':
         specifier: ^20.5.7
         version: 20.5.7
@@ -24075,8 +24078,7 @@ packages:
   /@types/bs58check@2.1.0:
     resolution: {integrity: sha512-OxsysnJQh82vy9DRbOcw9m2j/WiyqZLn0YBhKxdQ+aCwoHj+tWzyCgpwAkr79IfDXZKxc6h7k89T9pwS78CqTQ==}
     dependencies:
-      '@types/node': 18.16.19
-    dev: false
+      '@types/node': 20.5.7
 
   /@types/btoa-lite@1.0.0:
     resolution: {integrity: sha512-wJsiX1tosQ+J5+bY5LrSahHxr2wT+uME5UDwdN1kg4frt40euqA+wzECkmq4t5QbveHiJepfdThgQrPw6KiSlg==}
@@ -24232,7 +24234,7 @@ packages:
     resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
     dependencies:
       '@types/jsonfile': 6.1.1
-      '@types/node': 20.4.2
+      '@types/node': 20.5.7
     dev: true
 
   /@types/fs-extra@9.0.13:
@@ -24405,7 +24407,7 @@ packages:
   /@types/jsonfile@6.1.1:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
-      '@types/node': 20.4.2
+      '@types/node': 20.5.7
     dev: true
 
   /@types/jsonwebtoken@8.5.8:
