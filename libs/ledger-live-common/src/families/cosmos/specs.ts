@@ -551,7 +551,7 @@ const coreum = {
   }),
 };
 
-const injectiveMinimalTransactionAmount = new BigNumber(160000);
+const injectiveMinimalTransactionAmount = new BigNumber(1000000);
 const injective = {
   ...generateGenericCosmosTest("injective", {
     minViableAmount: injectiveMinimalTransactionAmount,
