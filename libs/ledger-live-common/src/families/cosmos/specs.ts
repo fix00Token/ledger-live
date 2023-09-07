@@ -437,6 +437,7 @@ const generateGenericCosmosTest = (currencyId: string, config?: Partial<AppSpec<
     appQuery: {
       model: DeviceModelId.nanoS,
       appName: "Cosmos",
+      appVersion: "2.34.11",
     },
     genericDeviceAction: acceptTransaction,
     testTimeout: 2 * 60 * 1000,
@@ -490,6 +491,7 @@ const persistence = {
     minViableAmount: persistenceMinimalTransactionAmount,
     mutations: cosmosLikeMutations(persistenceMinimalTransactionAmount),
     testTimeout: 8 * 60 * 1000,
+    skipOperationHistory: true,
   }),
 };
 
@@ -509,6 +511,7 @@ const onomy = {
     minViableAmount: onomyMinimalTransactionAmount,
     mutations: cosmosLikeMutations(onomyMinimalTransactionAmount),
     testTimeout: 8 * 60 * 1000,
+    skipOperationHistory: true,
   }),
 };
 
@@ -526,6 +529,7 @@ const secretNetwork = {
   ...generateGenericCosmosTest("secret_network", {
     minViableAmount: secretNetworkMinimalTransactionAmount,
     mutations: cosmosLikeMutations(secretNetworkMinimalTransactionAmount),
+    skipOperationHistory: true,
   }),
 };
 
@@ -534,6 +538,7 @@ const stargaze = {
   ...generateGenericCosmosTest("stargaze", {
     minViableAmount: stargazeMinimalTransactionAmount,
     mutations: cosmosLikeMutations(stargazeMinimalTransactionAmount),
+    skipOperationHistory: true,
   }),
 };
 
@@ -542,6 +547,16 @@ const coreum = {
   ...generateGenericCosmosTest("coreum", {
     minViableAmount: coreumMinimalTransactionAmount,
     mutations: cosmosLikeMutations(coreumMinimalTransactionAmount),
+    skipOperationHistory: true,
+  }),
+};
+
+const injectiveMinimalTransactionAmount = new BigNumber(160000);
+const injective = {
+  ...generateGenericCosmosTest("injective", {
+    minViableAmount: injectiveMinimalTransactionAmount,
+    mutations: cosmosLikeMutations(injectiveMinimalTransactionAmount),
+    skipOperationHistory: true,
   }),
 };
 
@@ -557,4 +572,5 @@ export default {
   secretNetwork,
   stargaze,
   coreum,
+  injective,
 };
