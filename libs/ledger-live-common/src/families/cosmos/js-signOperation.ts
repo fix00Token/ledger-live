@@ -1,16 +1,22 @@
-import type { Transaction } from "./types";
+import type { CosmosAccount, Transaction } from "./types";
 import { Observable } from "rxjs";
 import { withDevice } from "../../hw/deviceAccess";
 import { encodeOperationId } from "../../operation";
 import { txToMessages, buildTransaction } from "./js-buildTransaction";
 import BigNumber from "bignumber.js";
 import { makeSignDoc, StdSignDoc } from "@cosmjs/launchpad";
-import type { Operation, OperationType, SignOperationFnSignature } from "@ledgerhq/types-live";
+import type {
+  Account,
+  Operation,
+  OperationType,
+  SignOperationFnSignature,
+} from "@ledgerhq/types-live";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
 import { sortObjectKeysDeeply } from "./helpers";
 import { Secp256k1Signature } from "@cosmjs/crypto";
 import { CosmosApp } from "@zondax/ledger-cosmos-js";
+import { calculateFees, getEstimatedFees } from "./js-prepareTransaction";
 
 const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceId, transaction }) =>
   withDevice(deviceId)(
@@ -26,20 +32,15 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           const chainInstance = cryptoFactory(account.currency.id);
           o.next({ type: "device-signature-requested" });
           const { aminoMsgs, protoMsgs } = await txToMessages(account, transaction);
-          if (!transaction.gas) {
-            throw new Error("transaction.gas is missing");
-          }
-          if (!transaction.fees) {
-            throw new Error("transaction.fees is missing");
-          }
+          const { gasWanted, gasWantedFees } = await calculateFees({ account, transaction });
           const feeToEncode = {
             amount: [
               {
                 denom: account.currency.units[1].code,
-                amount: transaction.fees.toString(),
+                amount: gasWantedFees.toString(),
               },
             ],
-            gas: transaction.gas.toString(),
+            gas: gasWanted.toString(),
           };
           // Note:
           // Cosmos Nano App sign data in Amino way only, not Protobuf.
@@ -74,7 +75,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             memo: transaction.memo || "",
             pubKeyType,
             pubKey,
-            feeAmount: signDoc.fee.amount,
+            feeAmount: signDoc.fee.amount as any,
             gasLimit: signDoc.fee.gas,
             sequence: signDoc.sequence,
             signature,

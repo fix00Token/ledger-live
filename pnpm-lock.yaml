@@ -1956,9 +1956,6 @@ importers:
       '@celo/wallet-ledger':
         specifier: ^3.0.1
         version: 3.0.1
-      '@cosmjs/amino':
-        specifier: ^0.28.4
-        version: 0.28.4
       '@cosmjs/crypto':
         specifier: ^0.31.0
         version: 0.31.0
@@ -10617,15 +10614,6 @@ packages:
       '@cosmjs/utils': 0.26.6
     dev: false
 
-  /@cosmjs/amino@0.28.4:
-    resolution: {integrity: sha512-b8y5gFC0eGrH0IoYSNtDmTdsTgeQ1KFZ5YVOeIiKmzF91MeiciYO/MNqc027kctacZ+UbnVWGEUGyRBPi9ta/g==}
-    dependencies:
-      '@cosmjs/crypto': 0.28.4
-      '@cosmjs/encoding': 0.28.4
-      '@cosmjs/math': 0.28.4
-      '@cosmjs/utils': 0.28.4
-    dev: false
-
   /@cosmjs/crypto@0.24.1:
     resolution: {integrity: sha512-GPhaWmQO06mXldKj/b+oKF5o3jMNfRKpAw+Q8XQhrD7ItinVPDMu8Xgl6frUXWTUdgpYwqpvqOcpm85QUsYV0Q==}
     dependencies:
@@ -10673,18 +10661,6 @@ packages:
       sha.js: 2.4.11
     dev: false
 
-  /@cosmjs/crypto@0.28.4:
-    resolution: {integrity: sha512-JRxNLlED3DDh9d04A0RcRw3mYkoobN7q7wafUFy3vI1TjoyWx33v0gqqaYE6/hoo9ghUrJSVOfzVihl8fZajJA==}
-    dependencies:
-      '@cosmjs/encoding': 0.28.4
-      '@cosmjs/math': 0.28.4
-      '@cosmjs/utils': 0.28.4
-      '@noble/hashes': 1.3.1
-      bn.js: 5.2.1
-      elliptic: 6.5.4
-      libsodium-wrappers: 0.7.10
-    dev: false
-
   /@cosmjs/crypto@0.31.0:
     resolution: {integrity: sha512-UaqCe6Tgh0pe1QlZ66E13t6FlIF86QrnBXXq+EN7Xe1Rouza3fJ1ojGlPleJZkBoq3tAyYVIOOqdZIxtVj/sIQ==}
     dependencies:
@@ -10723,14 +10699,6 @@ packages:
 
   /@cosmjs/encoding@0.26.6:
     resolution: {integrity: sha512-dU0P2Um9ZB5yHpQYq+a6XnPKV4LD1kHd3nggbD0smn7wTwWW1XJKlms40SBZHtbm4dW9wPaPGf4yOkwwBdJO+w==}
-    dependencies:
-      base64-js: 1.5.1
-      bech32: 1.1.4
-      readonly-date: 1.0.0
-    dev: false
-
-  /@cosmjs/encoding@0.28.4:
-    resolution: {integrity: sha512-N6Qnjs4dd8KwjW5m9t3L+rWYYGW2wyS+iLtJJ9DD8DiTTxpW9h7/AmUVO/dsRe5H2tV8/DzH/B9pFfpsgro22A==}
     dependencies:
       base64-js: 1.5.1
       bech32: 1.1.4
@@ -10804,12 +10772,6 @@ packages:
     resolution: {integrity: sha512-nblvidxwugM/kh1Vx95s7MQ596r5ap1ZUpjHYJTLbnYvnObHvfYvM3qb8SJzY0u7x5+u9E0oSFzLwMRfUTEQ3g==}
     dependencies:
       bn.js: 4.12.0
-    dev: false
-
-  /@cosmjs/math@0.28.4:
-    resolution: {integrity: sha512-wsWjbxFXvk46Dsx8jQ5vsBZOIQuiUIyaaZbUvxsgIhAMpuuBnV5O/drK87+B+4cL+umTelFqTbWnkqueVCIFxQ==}
-    dependencies:
-      bn.js: 5.2.1
     dev: false
 
   /@cosmjs/math@0.31.1:
@@ -10979,10 +10941,6 @@ packages:
 
   /@cosmjs/utils@0.26.6:
     resolution: {integrity: sha512-Zx60MMI1vffX8c2UbUMlszrGIug3TWa25bD7NF3blJ5k/MVCZFsPafEZ+jEi7kcqoxdhMhgJTI6AmUhnMfq9SQ==}
-    dev: false
-
-  /@cosmjs/utils@0.28.4:
-    resolution: {integrity: sha512-lb3TU6833arPoPZF8HTeG9V418CpurvqH5Aa/ls0I0wYdPDEMO6622+PQNQhQ8Vw8Az2MXoSyc8jsqrgawT84Q==}
     dev: false
 
   /@cosmjs/utils@0.31.1:

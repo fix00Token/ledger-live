@@ -15,16 +15,16 @@ export const calculateFees: CacheRes<
     transaction: Transaction;
   }>,
   {
-    estimatedFees: BigNumber;
-    estimatedGas: BigNumber;
+    gasWanted: BigNumber;
+    gasWantedFees: BigNumber;
   }
 > = makeLRUCache(
   async ({
     account,
     transaction,
   }): Promise<{
-    estimatedFees: BigNumber;
-    estimatedGas: BigNumber;
+    gasWanted: BigNumber;
+    gasWantedFees: BigNumber;
   }> => {
     return await getEstimatedFees(account as CosmosAccount, transaction);
   },
@@ -46,46 +46,46 @@ export const calculateFees: CacheRes<
 export const getEstimatedFees = async (
   account: CosmosAccount,
   transaction: Transaction,
-): Promise<{ estimatedFees: BigNumber; estimatedGas: BigNumber }> => {
+): Promise<{
+  gasWanted: BigNumber;
+  gasWantedFees: BigNumber;
+}> => {
   const chainInstance = cryptoFactory(account.currency.id);
-  let estimatedGas = new BigNumber(chainInstance.defaultGas);
+  let gasWanted = new BigNumber(chainInstance.defaultGas);
+  let gasUsed = new BigNumber(chainInstance.defaultGas);
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
   const { protoMsgs } = await txToMessages(account, transaction);
   const { sequence, pubKeyType, pubKey } = await cosmosAPI.getAccount(account.freshAddress);
   const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
 
-  if (protoMsgs && protoMsgs.length > 0) {
-    const txBytes = await buildTransaction({
-      protoMsgs,
-      memo: transaction.memo || "",
-      pubKeyType,
-      pubKey,
-      feeAmount: undefined,
-      gasLimit: undefined,
-      sequence: String(sequence),
-      signature,
+  const txBytes = await buildTransaction({
+    protoMsgs,
+    memo: transaction.memo || "",
+    pubKeyType,
+    pubKey,
+    feeAmount: undefined,
+    gasLimit: undefined,
+    sequence: String(sequence),
+    signature,
+  });
+
+  const txToSimulate = Array.from(Uint8Array.from(txBytes));
+
+  try {
+    const simulationResult = await cosmosAPI.simulate(txToSimulate);
+    gasUsed = simulationResult.gasUsed;
+  } catch (e) {
+    log("cosmos/simulate", "failed to estimate gas usage during tx simulation", {
+      e,
     });
-
-    const txToSimulate = Array.from(Uint8Array.from(txBytes));
-
-    try {
-      const gasUsed = await cosmosAPI.simulate(txToSimulate);
-      estimatedGas = gasUsed
-        .multipliedBy(new BigNumber(getEnv("COSMOS_GAS_AMPLIFIER")))
-        .integerValue(BigNumber.ROUND_CEIL);
-    } catch (e) {
-      log("cosmos/simulate", "failed to estimate gas usage during tx simulation", {
-        e,
-      });
-    }
   }
 
-  const estimatedFees = estimatedGas
-    .times(chainInstance.minGasPrice)
-    .integerValue(BigNumber.ROUND_CEIL);
+  gasWanted = gasUsed.times(getEnv("COSMOS_GAS_AMPLIFIER")).integerValue(BigNumber.ROUND_CEIL);
 
-  return { estimatedFees, estimatedGas };
+  const gasWantedFees = gasWanted.times(chainInstance.minGasPrice);
+
+  return { gasWanted, gasWantedFees };
 };
 
 export const prepareTransaction = async (
@@ -99,7 +99,7 @@ export const prepareTransaction = async (
     memo = "Ledger Live";
   }
 
-  const { estimatedFees, estimatedGas } = await calculateFees({
+  const { gasWanted, gasWantedFees } = await calculateFees({
     account,
     transaction: {
       ...transaction,
@@ -111,20 +111,20 @@ export const prepareTransaction = async (
   });
 
   if (transaction.useAllAmount) {
-    amount = getMaxEstimatedBalance(account as CosmosAccount, estimatedFees);
+    amount = getMaxEstimatedBalance(account as CosmosAccount, gasWantedFees);
   }
 
   if (
     transaction.memo !== memo ||
-    !estimatedFees.eq(transaction.fees || new BigNumber(0)) ||
-    !estimatedGas.eq(transaction.gas || new BigNumber(0)) ||
+    !gasWantedFees.eq(transaction.fees || new BigNumber(0)) ||
+    !gasWanted.eq(transaction.gas || new BigNumber(0)) ||
     !amount.eq(transaction.amount)
   ) {
     return {
       ...transaction,
       memo,
-      fees: estimatedFees,
-      gas: estimatedGas,
+      fees: gasWantedFees,
+      gas: gasWanted,
       amount,
     };
   }

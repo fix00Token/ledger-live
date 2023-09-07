@@ -59,7 +59,7 @@ const defaultConfig = {
       },
       injective: {
         lcd: "https://injective-api.polkachu.com",
-        minGasPrice: 700000000,
+        minGasPrice: 900000000,
       },
     } as { [currency: string]: CosmosCurrencyConfig },
   },

@@ -8,13 +8,13 @@ import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1b
 import { SignMode } from "cosmjs-types/cosmos/tx/signing/v1beta1/signing";
 import { TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import type { Account } from "@ledgerhq/types-live";
-import { AminoMsg } from "@cosmjs/amino";
 import {
   AminoMsgSend,
   AminoMsgDelegate,
   AminoMsgUndelegate,
   AminoMsgBeginRedelegate,
   AminoMsgWithdrawDelegatorReward,
+  Coin,
 } from "@cosmjs/stargate";
 import { cosmos } from "@keplr-wallet/cosmos";
 import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
@@ -25,6 +25,11 @@ import Long from "long";
 type ProtoMsg = {
   typeUrl: string;
   value: Uint8Array;
+};
+
+type AminoMsg = {
+  readonly type: string;
+  readonly value: any;
 };
 
 export const txToMessages = async (
@@ -265,8 +270,8 @@ export const buildTransaction = async ({
   memo: string;
   pubKeyType: string;
   pubKey: string;
-  feeAmount: any;
-  gasLimit: any;
+  feeAmount: { amount: string; denom: string } | undefined;
+  gasLimit: string | undefined;
   sequence: string;
   signature: Uint8Array;
 }): Promise<Uint8Array> => {
@@ -299,8 +304,8 @@ export const buildTransaction = async ({
         },
       ],
       fee: Fee.fromPartial({
-        amount: feeAmount,
-        gasLimit,
+        amount: feeAmount as any,
+        gasLimit: gasLimit,
       }),
     }).finish(),
     signatures: [signature],
