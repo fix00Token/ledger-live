@@ -83,7 +83,9 @@ export const getEstimatedFees = async (
 
   gasWanted = gasUsed.times(getEnv("COSMOS_GAS_AMPLIFIER")).integerValue(BigNumber.ROUND_CEIL);
 
-  const gasWantedFees = gasWanted.times(chainInstance.minGasPrice);
+  const gasWantedFees = gasWanted
+    .times(chainInstance.minGasPrice)
+    .integerValue(BigNumber.ROUND_CEIL);
 
   return { gasWanted, gasWantedFees };
 };
