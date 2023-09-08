@@ -9151,7 +9151,7 @@
 | Tron | BTT | TWkLwAgXtFHwQ93sQEpVA5SMJJnjBsGwJX | BitTorrent | delisted, countervalues disabled | tron/trc10/1001952 |
 | Tron | BTT | TGUTUbTMkHrmrQWATyUELKemD1fjj2vWZv | BitTorrent | delisted, countervalues disabled | tron/trc10/1001948 |
 | Tron | BTT | TFMAHNTS35ZNL5Pr9XToVVekyAbE9ts65Y | BitTorrent | delisted, countervalues disabled | tron/trc10/1000491 |
-| Tron | BTT | TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4 | BitTorrent | countervalues disabled | tron/trc20/TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4 |
+| Tron | BTT | TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4 | BitTorrent |  | tron/trc20/TAFjULxiVgT4qWk6UZwjqwZXTSaGaqnVp4 |
 | Tron | BTTOLD | TF5Bn4cJCT6GVeUgyCN4rBhDg42KBrpAjg | BitTorrent Old | delisted, countervalues disabled | tron/trc10/1002000 |
 | Tron | BTT | TNMZhgyEAiMENBm2zcLpFs7j8VzQbdLn58 | BitTorrentToken | delisted, countervalues disabled | tron/trc10/1001940 |
 | Tron | BTV | TJUwM4qk1et2nNKuESQ7UVHPjAHoRqAz3T | BitValuta | delisted, countervalues disabled | tron/trc10/1002521 |
@@ -9565,7 +9565,7 @@
 | Tron | EOS | TUqHRKQ9KR8nEYYANn9vYt9e4wDWKeQSYz | EOS | delisted, countervalues disabled | tron/trc10/1000005 |
 | Tron | EOY | TXDLKf9zhyT2S27G2S7xAGVvJonWahT9yD | EOY | delisted, countervalues disabled | tron/trc10/1001217 |
 | Tron | EPICAL | TBitZMK7YSUb2Q1Cm537D5iAZSJkaPdN9c | EPICAL | delisted, countervalues disabled | tron/trc10/1002798 |
-| Tron | TEUR | TZJmk51TP3YEETw7phRP581A7H3VzLDFsa | EUR AlteWay Token | countervalues disabled | tron/trc20/TZJmk51TP3YEETw7phRP581A7H3VzLDFsa |
+| Tron | TEUR | TZJmk51TP3YEETw7phRP581A7H3VzLDFsa | EUR AlteWay Token |  | tron/trc20/TZJmk51TP3YEETw7phRP581A7H3VzLDFsa |
 | Tron | EURT | TSSnRwHwcZghXZTneemh7k3DMSCLPiKds2 | EURT | delisted, countervalues disabled | tron/trc10/1000260 |
 | Tron | EVO | TSVCBAqfg3F4cJWDi6iwZgYFUHgTsaZYKG | EVO | delisted, countervalues disabled | tron/trc10/1001757 |
 | Tron | EWOK | TL5cogb1dAvNALVWATNinhw3MFRWDedFnG | EWOKS | delisted, countervalues disabled | tron/trc10/1001233 |
@@ -9970,8 +9970,8 @@
 | Tron | JPYT | TL2HwcjpW8c7kvBnu4N3VANH9CbHzVgT1D | JPYT | delisted, countervalues disabled | tron/trc10/1000263 |
 | Tron | JRP | TEnzEdfzodBFUMj7NAV4u6tuTqin2VDiEy | JRPMINES | delisted, countervalues disabled | tron/trc10/1000118 |
 | Tron | JUICE | TChQ691W4CkQA3cCQMGcoEUkc5FSebuG7E | JUICE | delisted, countervalues disabled | tron/trc10/1002173 |
-| Tron | JST | TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9 | JUST GOV | countervalues disabled | tron/trc20/TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9 |
-| Tron | USDJ | TMwFHYXLJaRUPeW6421aqXL4ZEzPRFGkGT | JUST Stablecoin | countervalues disabled | tron/trc20/TMwFHYXLJaRUPeW6421aqXL4ZEzPRFGkGT |
+| Tron | JST | TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9 | JUST GOV |  | tron/trc20/TCFLL5dx5ZJdKnWuesXxi1VPwjLVmWZZy9 |
+| Tron | USDJ | TMwFHYXLJaRUPeW6421aqXL4ZEzPRFGkGT | JUST Stablecoin |  | tron/trc20/TMwFHYXLJaRUPeW6421aqXL4ZEzPRFGkGT |
 | Tron | JACK | TT3c35KUARtk8e6ek3qA6pAddFqu5t9Pyg | JackTronLottery | delisted, countervalues disabled | tron/trc10/1001911 |
 | Tron | JADE | TUMaabMDstPSrFn4GxQabEwiJFzSDBBHoo | Jade | delisted, countervalues disabled | tron/trc10/1001103 |
 | Tron | JAL | TCuoBySZpyzeaFiVEpKpwqkwEFRHEWNyWL | Jalmood | delisted, countervalues disabled | tron/trc10/1002175 |
@@ -10036,7 +10036,7 @@
 | Tron | FAKE | TLmFBokFvDgqPq6RhHJBmtJR65RHjVFz6r | Kiwiberry | delisted, countervalues disabled | tron/trc10/1001056 |
 | Tron | KCP | TDw8g8qHQxTmkmYXNTgGfAN7TsxfXFkX7o | KlassicCarParts | delisted, countervalues disabled | tron/trc10/1000184 |
 | Tron | KTC | THuzhRJx3D6nA2HzZ5F2Mdh4btVrTNSbg8 | KlayThompsonCoin | delisted, countervalues disabled | tron/trc10/1001979 |
-| Tron | KLV | TVj7RNVHy6thbM7BWdSe9G6gXwKhjhdNZS | Klever | countervalues disabled | tron/trc20/TVj7RNVHy6thbM7BWdSe9G6gXwKhjhdNZS |
+| Tron | KLV | TVj7RNVHy6thbM7BWdSe9G6gXwKhjhdNZS | Klever |  | tron/trc20/TVj7RNVHy6thbM7BWdSe9G6gXwKhjhdNZS |
 | Tron | KC | TFqKh5dttnfrbRdALRht1H9zygm1KA4KLh | KloutCoin | delisted, countervalues disabled | tron/trc10/1001439 |
 | Tron | KOBE | TWJLVhZ9ziwBbhSPFLtewQf34uBG7bqene | Kobe | delisted, countervalues disabled | tron/trc10/1001496 |
 | Tron | KOBE | TTNAd9NcPcAj6A3NogxLPQnnngxv6Dkj2z | KobeBryantCoin | delisted, countervalues disabled | tron/trc10/1001492 |
@@ -11057,7 +11057,7 @@
 | Tron | TT | TGLLjWSwapkscCU5y8wi4Mj8zxnuLsqQfD | TestToken | delisted, countervalues disabled | tron/trc10/1001141 |
 | Tron | TTONE | TF4RLCzkQzCSXRxHqw1s7EAuABQnTQNHDX | TestTokenOne | delisted, countervalues disabled | tron/trc10/1002480 |
 | Tron | TSC | TLGYQzB8QHL9v9vpyPKAcCSxPo9wXmyfY6 | Testcoin | delisted, countervalues disabled | tron/trc10/1001954 |
-| Tron | USDT | TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t | Tether USD | countervalues disabled | tron/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t |
+| Tron | USDT | TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t | Tether USD |  | tron/trc20/TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t |
 | Tron | USDT | TQdeNKFF9rbpDdvKZLvXvE6ak5c43YxQ4u | TetherUSD | delisted, countervalues disabled | tron/trc10/1002553 |
 | Tron | USDT | TT75TjLbvcyvak8ZVGwDYv7qNKEPVSwXNb | TetherUSD | delisted, countervalues disabled | tron/trc10/1002546 |
 | Tron | TTT | TPGHykYb4JmC9h149d7v2MJNcLYM2EAe9G | Tetractys | delisted, countervalues disabled | tron/trc10/1000200 |
@@ -11412,7 +11412,7 @@
 | Tron | WHY | TXNRmUqEVUdrXDNsVWgxAQmR5juxUF1dWr | WHISKY | delisted, countervalues disabled | tron/trc10/1001842 |
 | Tron | BYSD | TMWUs3PiSDkEXuXRwQi9ixoURH8vBSbioQ | WILLBUYSEEDatGmailcomDoublePrice | delisted, countervalues disabled | tron/trc10/1000825 |
 | Tron | WIN | TBzwNEE7D3DdTB4wALiSBaMmpSK7jdoxYF | WIN | delisted, countervalues disabled | tron/trc10/1000161 |
-| Tron | WIN | TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7 | WINK | countervalues disabled | tron/trc20/TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7 |
+| Tron | WIN | TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7 | WINK |  | tron/trc20/TLa2f6VPqDgRE67v1736s7bJ8Ray5wYjU7 |
 | Tron | WS | TJMSD71HRq6Jpv7WzgBXZ824gciBV1t8V2 | WIST | delisted, countervalues disabled | tron/trc10/1002216 |
 | Tron | WIST | TAogFiGeTNNnfzj1fGJAGctV3JBqvJJEyY | WIST | delisted, countervalues disabled | tron/trc10/1002215 |
 | Tron | WL | TQijirN36heEBXZqY4EUaHqYr9GTuCtkvx | WL | delisted, countervalues disabled | tron/trc10/1001823 |
