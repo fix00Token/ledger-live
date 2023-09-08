@@ -25,12 +25,8 @@ export const acceptTransaction: DeviceAction<Transaction, any> = deviceActionFlo
       button: SpeculosButton.BOTH,
     },
     {
-      title: "Expert Mode : disabled",
+      title: "Expert Mode",
       button: SpeculosButton.BOTH,
-    },
-    {
-      title: "Expert Mode : enabled",
-      button: SpeculosButton.LEFT,
     },
     {
       title: "Sequence",
