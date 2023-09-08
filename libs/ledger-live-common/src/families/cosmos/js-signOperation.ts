@@ -32,15 +32,17 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           const chainInstance = cryptoFactory(account.currency.id);
           o.next({ type: "device-signature-requested" });
           const { aminoMsgs, protoMsgs } = await txToMessages(account, transaction);
-          const { gasWanted, gasWantedFees } = await calculateFees({ account, transaction });
+          if (transaction.fees == null || transaction.gas == null) {
+            throw new Error("Transaction misses gas information");
+          }
           const feeToEncode = {
             amount: [
               {
                 denom: account.currency.units[1].code,
-                amount: gasWantedFees.toString(),
+                amount: transaction.fees.toString(),
               },
             ],
-            gas: gasWanted.toString(),
+            gas: transaction.gas.toString(),
           };
           // Note:
           // Cosmos Nano App sign data in Amino way only, not Protobuf.

@@ -39,7 +39,7 @@ export const calculateFees: CacheRes<
       transaction.sourceValidator ? transaction.sourceValidator : ""
     }`,
   {
-    ttl: 1000 * 60, // 60 sec
+    ttl: 1000 * 10, // 10 sec
   },
 );
 
