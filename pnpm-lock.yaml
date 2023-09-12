@@ -230,7 +230,7 @@ importers:
         specifier: ^4.6.3
         version: 4.6.3
       '@electron/remote':
-        specifier: ^2.0.10
+        specifier: ^2.0.11
         version: 2.0.11(electron@26.2.1)
       '@ledgerhq/coin-evm':
         specifier: workspace:^
@@ -332,7 +332,7 @@ importers:
         specifier: ^8.1.0
         version: 8.1.0
       electron-updater:
-        specifier: ^6.0.0
+        specifier: ^6.1.4
         version: 6.1.4
       firebase:
         specifier: ^9.6.6
@@ -636,10 +636,10 @@ importers:
         specifier: ^4.3.4
         version: 4.3.4
       electron:
-        specifier: ^26.0.0
+        specifier: ^26.2.0
         version: 26.2.1
       electron-builder:
-        specifier: ^24.0.0
+        specifier: ^24.6.4
         version: 24.6.4(lodash@4.17.21)
       electron-devtools-installer:
         specifier: ^3.2.0
@@ -27831,7 +27831,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.5(react-dom@17.0.2)(react-is@17.0.2)(react@17.0.2)
+      styled-components: 5.3.5(react-is@18.1.0)(react@18.0.0)
 
   /babel-plugin-syntax-jsx@6.18.0:
     resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
@@ -54787,7 +54787,6 @@ packages:
       react-is: 18.1.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
-    dev: false
 
   /styled-components@6.0.7(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-xIwWuiRMYR43mskVsW9MGTRjSo7ol4bcVjT595fGUp3OLBJOlOgaiKaxsHdC4a2HqWKqKnh0CmcRbk5ogyDjTg==}
