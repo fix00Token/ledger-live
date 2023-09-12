@@ -542,7 +542,6 @@ export const DeviceActionDefaultRendering = <R, H extends States, P>({
     });
   }
 
-  console.log({ payload });
   if (!payload) {
     return null;
   }
@@ -574,12 +573,6 @@ export default function DeviceAction<R, H extends States, P>({
   const device = useSelector(getCurrentDevice);
   const hookState = action.useHook(device, request);
   const payload = action.mapResult(hookState);
-
-  console.log({
-    device,
-    hookState,
-    payload,
-  });
 
   return (
     <DeviceActionDefaultRendering
