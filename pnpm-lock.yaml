@@ -1423,8 +1423,8 @@ importers:
         specifier: ^6.11.4
         version: 6.11.5(@types/react@18.2.0)(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
       rxjs:
-        specifier: '6'
-        version: 6.6.7
+        specifier: ^7.8.1
+        version: 7.8.1
       semver:
         specifier: ^7.5.4
         version: 7.5.4
