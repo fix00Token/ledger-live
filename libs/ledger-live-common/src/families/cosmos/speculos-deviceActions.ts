@@ -13,22 +13,6 @@ const typeWording = {
 export const acceptTransaction: DeviceAction<Transaction, any> = deviceActionFlow({
   steps: [
     {
-      title: "Cosmos Ready",
-      button: SpeculosButton.RIGHT,
-    },
-    {
-      title: "Expert Mode Required",
-      button: SpeculosButton.RIGHT,
-    },
-    {
-      title: "Ok",
-      button: SpeculosButton.BOTH,
-    },
-    {
-      title: "Expert Mode",
-      button: SpeculosButton.BOTH,
-    },
-    {
       title: "Sequence",
       button: SpeculosButton.RIGHT,
     },

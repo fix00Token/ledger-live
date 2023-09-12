@@ -9,6 +9,7 @@ import {
   expectSiblingsHaveSpendablePartGreaterThan,
   genericTestDestination,
   pickSiblings,
+  SpeculosButton,
 } from "../../bot/specs";
 import type { AppSpec, MutationSpec } from "../../bot/types";
 import { getCryptoCurrencyById } from "../../currencies";
@@ -442,6 +443,13 @@ const generateGenericCosmosTest = (currencyId: string, config?: Partial<AppSpec<
     genericDeviceAction: acceptTransaction,
     testTimeout: 2 * 60 * 1000,
     test: cosmosLikeTest,
+    onSpeculosDeviceCreated:
+      currencyId === "injective"
+        ? async ({ transport }) => {
+            await transport.button(SpeculosButton.RIGHT);
+            await transport.button(SpeculosButton.BOTH);
+          }
+        : undefined,
     ...config,
   };
 };
