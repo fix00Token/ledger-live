@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { log } from "@ledgerhq/logs";
 import { DeviceModelId, getDeviceModel } from "@ledgerhq/devices";
 import { DeviceInfo, FirmwareUpdateContext } from "@ledgerhq/types-live";
-import { withV3StyleProvider } from "~/renderer/styles/StyleProviderV3";
+import StyleProviderV3 from "~/renderer/styles/StyleProviderV3";
 import { hasFinalFirmware } from "@ledgerhq/live-common/hw/hasFinalFirmware";
 import logger from "~/renderer/logger";
 import StepResetDevice, { StepResetFooter } from "./steps/00-step-reset-device";
@@ -15,6 +15,8 @@ import { isDeviceLocalizationSupported } from "@ledgerhq/live-common/manager/loc
 import StepConfirmation, { StepConfirmFooter } from "./steps/03-step-confirmation";
 import { Divider, Flex, FlowStepper, Text } from "@ledgerhq/react-ui";
 import Disclaimer from "./Disclaimer";
+import { SideDrawer } from "~/renderer/components/SideDrawer";
+import { useTheme } from "styled-components";
 
 type MaybeError = Error | undefined | null;
 
@@ -55,6 +57,8 @@ export type StepProps = {
 export type StepId = "idCheck" | "updateMCU" | "updating" | "finish" | "resetDevice" | "restore";
 
 export type Props = {
+  isOpen: boolean;
+  onRequestClose: () => void;
   withResetStep: boolean;
   withAppsToReinstall: boolean;
   onDrawerClose: (reinstall?: boolean) => void;
@@ -77,6 +81,8 @@ type Step = {
 };
 
 const UpdateModal = ({
+  isOpen,
+  onRequestClose,
   stepId,
   deviceModelId,
   withResetStep,
@@ -88,6 +94,7 @@ const UpdateModal = ({
   ...props
 }: Props) => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const [stateStepId, setStateStepId] = useState<StepId>(stepId);
   const [completedRestoreSteps, setCompletedRestoreSteps] = useState<string[]>([]);
   const [isLanguagePromptOpen, setIsLanguagePromptOpen] = useState<boolean>(false);
@@ -222,72 +229,87 @@ const UpdateModal = ({
   const deviceModel = getDeviceModel(deviceModelId);
 
   return (
-    <Flex
-      key={`${nonce}_fwUpdate`}
-      flexDirection="column"
-      rowGap={5}
-      height="100%"
-      overflowY="hidden"
-      width="100%"
-      flex={1}
-      data-test-id="firmware-update-container"
+    <SideDrawer
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      direction="left"
+      preventBackdropClick
+      forceDisableFocusTrap
     >
-      <Text alignSelf="center" variant="h5Inter">
-        {t("manager.modal.title", { productName: deviceModel.productName })}
-      </Text>
-      {showDisclaimer ? (
-        <Disclaimer onContinue={() => setShowDisclaimer(false)} t={t} firmware={firmware} />
-      ) : (
-        <FlowStepper.Indexed
-          activeKey={stateStepId}
-          extraStepperContainerProps={{ px: 12 }}
-          extraStepperProps={{ errored: !!error }}
-          extraContainerProps={{ overflowY: "hidden" }}
-          extraChildrenContainerProps={{ overflowY: "hidden" }}
-          renderChildren={undefined}
+      <StyleProviderV3 selectedPalette={theme.colors.type as "light" | "dark"}>
+        <Flex
+          key={`${nonce}_fwUpdate`}
+          flexDirection="column"
+          rowGap={5}
+          height="100%"
+          overflowY="hidden"
+          width="100%"
+          flex={1}
+          data-test-id="firmware-update-container"
+          marginBottom={5}
         >
-          {steps.map(step => (
-            <FlowStepper.Indexed.Step key={step.id} itemKey={step.id} label={step.label as string}>
-              <Flex
-                flex={1}
-                flexDirection="column"
-                justifyContent="space-between"
-                overflowY="hidden"
-              >
-                <Flex
-                  flex={1}
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="stretch"
-                  flexShrink={1}
-                  overflowY="hidden"
-                  px={12}
+          <Text alignSelf="center" variant="h5Inter">
+            {t("manager.modal.title", { productName: deviceModel.productName })}
+          </Text>
+          {showDisclaimer ? (
+            <Disclaimer onContinue={() => setShowDisclaimer(false)} t={t} firmware={firmware} />
+          ) : (
+            <FlowStepper.Indexed
+              activeKey={stateStepId}
+              extraStepperContainerProps={{ px: 12 }}
+              extraStepperProps={{ errored: !!error }}
+              extraContainerProps={{ overflowY: "hidden" }}
+              extraChildrenContainerProps={{ overflowY: "hidden" }}
+              renderChildren={undefined}
+            >
+              {steps.map(step => (
+                <FlowStepper.Indexed.Step
+                  key={step.id}
+                  itemKey={step.id}
+                  label={step.label as string}
                 >
-                  <step.component {...additionalProps} />
-                </Flex>
-                {step.footer ? (
-                  <Flex flexDirection="column" alignSelf="stretch">
-                    <Divider />
+                  <Flex
+                    flex={1}
+                    flexDirection="column"
+                    justifyContent="space-between"
+                    overflowY="hidden"
+                  >
                     <Flex
+                      flex={1}
+                      flexDirection="column"
+                      justifyContent="center"
+                      alignItems="stretch"
+                      flexShrink={1}
+                      overflowY="hidden"
                       px={12}
-                      alignSelf="stretch"
-                      flexDirection="row"
-                      justifyContent="space-between"
-                      pt={4}
-                      pb={1}
                     >
-                      <Flex flex={1} />
-                      <step.footer {...additionalProps} />
+                      <step.component {...additionalProps} />
                     </Flex>
+                    {step.footer ? (
+                      <Flex flexDirection="column" alignSelf="stretch">
+                        <Divider />
+                        <Flex
+                          px={12}
+                          alignSelf="stretch"
+                          flexDirection="row"
+                          justifyContent="space-between"
+                          pt={4}
+                          pb={1}
+                        >
+                          <Flex flex={1} />
+                          <step.footer {...additionalProps} />
+                        </Flex>
+                      </Flex>
+                    ) : null}
                   </Flex>
-                ) : null}
-              </Flex>
-            </FlowStepper.Indexed.Step>
-          ))}
-        </FlowStepper.Indexed>
-      )}
-    </Flex>
+                </FlowStepper.Indexed.Step>
+              ))}
+            </FlowStepper.Indexed>
+          )}
+        </Flex>
+      </StyleProviderV3>
+    </SideDrawer>
   );
 };
 
-export default withV3StyleProvider(UpdateModal);
+export default UpdateModal;

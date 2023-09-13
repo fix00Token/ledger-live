@@ -1,14 +1,11 @@
-import React, { useEffect, useState, useCallback, useContext, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Trans } from "react-i18next";
 import { InstalledItem } from "@ledgerhq/live-common/apps/types";
 import { getDeviceModel } from "@ledgerhq/devices";
 import manager from "@ledgerhq/live-common/manager/index";
 import { DeviceInfo, FirmwareUpdateContext } from "@ledgerhq/types-live";
 import { Device } from "@ledgerhq/live-common/hw/actions/types";
-import UpdateModal, {
-  Props as UpdateModalProps,
-  StepId,
-} from "~/renderer/modals/UpdateFirmwareModal";
+import UpdateFirmwareModal, { StepId } from "~/renderer/modals/UpdateFirmwareModal";
 import Text from "~/renderer/components/Text";
 import IconInfoCircle from "~/renderer/icons/InfoCircle";
 import Box from "~/renderer/components/Box";
@@ -16,7 +13,6 @@ import { urls } from "~/config/urls";
 import { openURL } from "~/renderer/linking";
 import FirmwareUpdateBanner from "~/renderer/components/FirmwareUpdateBanner";
 import { FakeLink } from "~/renderer/components/TopBanner";
-import { context } from "~/renderer/drawers/Provider";
 import { track } from "~/renderer/analytics/segment";
 
 type Props = {
@@ -61,13 +57,13 @@ const FirmwareUpdate = (props: Props) => {
     error,
     onReset,
   } = props;
-  const { setDrawer } = useContext(context);
   const stepId = initialStepId(props);
   const firmwareUpdateCompletedRef = useRef(false);
   const [autoOpened, setAutoOpened] = useState(false);
   const modal = deviceInfo.isOSU ? "install" : props.openFirmwareUpdate ? "disclaimer" : "closed";
   const deviceSpecs = getDeviceModel(device.modelId);
   const isDeprecated = manager.firmwareUnsupported(device.modelId, deviceInfo);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onDrawerClose = useCallback(() => {
     onReset((installed || []).map(({ name }) => name));
@@ -78,11 +74,11 @@ const FirmwareUpdate = (props: Props) => {
   }, []);
 
   const onRequestClose = useCallback(() => {
-    setDrawer();
+    setIsOpen(false);
     if (firmwareUpdateCompletedRef.current) {
       onReset([]);
     }
-  }, [onReset, setDrawer]);
+  }, [onReset]);
 
   const onOpenDrawer = useCallback(() => {
     if (!firmware) return;
@@ -91,48 +87,8 @@ const FirmwareUpdate = (props: Props) => {
     });
 
     setFirmwareUpdateOpened(true); // Prevents manager from reacting to device changes (?)
-    const updateModalProps: UpdateModalProps = {
-      withAppsToReinstall:
-        !!installed &&
-        installed.length > 0 &&
-        manager.firmwareUpdateWillUninstallApps(deviceInfo, device.modelId),
-      withResetStep: manager.firmwareUpdateNeedsLegacyBlueResetInstructions(
-        deviceInfo,
-        device.modelId,
-      ),
-      onDrawerClose,
-      status: modal,
-      stepId: stepId,
-      installed: installed,
-      firmware: firmware,
-      deviceInfo: deviceInfo,
-      device: device,
-      error: error,
-      deviceModelId: deviceSpecs.id,
-      setFirmwareUpdateOpened,
-      setFirmwareUpdateCompleted,
-      shouldReloadManagerOnCloseIfUpdateRefused: true,
-    };
-    setDrawer(UpdateModal, updateModalProps, {
-      preventBackdropClick: true,
-      forceDisableFocusTrap: true,
-      onRequestClose,
-    });
-  }, [
-    device,
-    deviceInfo,
-    deviceSpecs.id,
-    error,
-    firmware,
-    installed,
-    modal,
-    onDrawerClose,
-    onRequestClose,
-    setDrawer,
-    setFirmwareUpdateCompleted,
-    setFirmwareUpdateOpened,
-    stepId,
-  ]);
+    setIsOpen(true);
+  }, [firmware, setFirmwareUpdateOpened]);
 
   useEffect(() => {
     // NB Open automatically the firmware update drawer if needed
@@ -190,6 +146,32 @@ const FirmwareUpdate = (props: Props) => {
           >
             <Trans i18nKey="manager.firmware.banner.cta2" />
           </FakeLink>
+
+          <UpdateFirmwareModal
+            isOpen={isOpen}
+            onRequestClose={onRequestClose}
+            withAppsToReinstall={
+              !!installed &&
+              installed.length > 0 &&
+              manager.firmwareUpdateWillUninstallApps(deviceInfo, device.modelId)
+            }
+            withResetStep={manager.firmwareUpdateNeedsLegacyBlueResetInstructions(
+              deviceInfo,
+              device.modelId,
+            )}
+            onDrawerClose={onDrawerClose}
+            status={modal}
+            stepId={stepId}
+            installed={installed}
+            firmware={firmware}
+            deviceInfo={deviceInfo}
+            device={device}
+            error={error}
+            deviceModelId={deviceSpecs.id}
+            setFirmwareUpdateOpened={setFirmwareUpdateOpened}
+            setFirmwareUpdateCompleted={setFirmwareUpdateCompleted}
+            shouldReloadManagerOnCloseIfUpdateRefused={true}
+          />
         </Box>
       }
     />
