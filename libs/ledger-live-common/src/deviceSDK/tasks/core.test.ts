@@ -5,14 +5,6 @@ import { concatMap } from "rxjs/operators";
 import { TransportRef } from "../transports/core";
 import { aTransportRefBuilder } from "../mocks/aTransportRef";
 
-// Fakes the timer to accelerate the test
-// For this tests suite, easier than jest.useFakeTimers() + jest.advanceTimersByTime() etc.
-jest.mock("rxjs", () => {
-  const lib = jest.requireActual("rxjs");
-  lib.timer = jest.fn(() => of(1));
-  return lib;
-});
-
 describe("sharedLogicTaskWrapper", () => {
   const task = jest.fn();
   const wrappedTask = sharedLogicTaskWrapper<void, { type: "data" }>(task);
