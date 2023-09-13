@@ -24,10 +24,10 @@ describe("txToMessages", () => {
     });
 
     describe("Amino", () => {
-      it("should return a MsgSend message if transaction is complete", async () => {
+      it("should return a MsgSend message if transaction is complete", () => {
         transaction.recipient = "address";
         transaction.amount = new BigNumber(1000);
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         const [aminoMsg] = aminoMsgs;
         expect(aminoMsg).toBeTruthy();
         expect(aminoMsg.type).toContain("MsgSend");
@@ -37,37 +37,37 @@ describe("txToMessages", () => {
         expect(aminoMsg.value.amount[0].denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if recipient isn't defined", async () => {
+      it("should return no message if recipient isn't defined", () => {
         transaction.amount = new BigNumber(10);
         transaction.recipient = "";
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if amount is zero", async () => {
+      it("should return no message if amount is zero", () => {
         transaction.amount = new BigNumber(0);
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if amount is negative", async () => {
+      it("should return no message if amount is negative", () => {
         transaction.amount = new BigNumber(-10);
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if amount is negative", async () => {
+      it("should return no message if amount is negative", () => {
         transaction.amount = new BigNumber(-10);
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
     });
 
     describe("Proto", () => {
-      it("should return a MsgSend message if transaction is complete", async () => {
+      it("should return a MsgSend message if transaction is complete", () => {
         transaction.recipient = "address";
         transaction.amount = new BigNumber(1000);
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         const [protoMsg] = protoMsgs;
         const value = cosmos.bank.v1beta1.MsgSend.decode(protoMsg.value);
         expect(protoMsg).toBeTruthy();
@@ -78,22 +78,22 @@ describe("txToMessages", () => {
         expect(value.amount[0].denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if recipient isn't defined", async () => {
+      it("should return no message if recipient isn't defined", () => {
         transaction.amount = new BigNumber(10);
         transaction.recipient = "";
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if amount is zero", async () => {
+      it("should return no message if amount is zero", () => {
         transaction.amount = new BigNumber(0);
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if amount is negative", async () => {
+      it("should return no message if amount is negative", () => {
         transaction.amount = new BigNumber(-10);
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
     });
@@ -105,7 +105,7 @@ describe("txToMessages", () => {
     });
 
     describe("Amino", () => {
-      it("should return a MsgDelegate message if transaction is complete", async () => {
+      it("should return a MsgDelegate message if transaction is complete", () => {
         transaction.amount = new BigNumber(1000);
         transaction.validators = [
           {
@@ -113,7 +113,7 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         const [message] = aminoMsgs;
         expect(message).toBeTruthy();
         expect(message.type).toContain("MsgDelegate");
@@ -123,35 +123,35 @@ describe("txToMessages", () => {
         expect(message.value.amount?.denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if tx has a 0 amount", async () => {
+      it("should return no message if tx has a 0 amount", () => {
         transaction.amount = new BigNumber(0);
         transaction.validators = [{ address: "realAddressTrustMe" } as CosmosDelegationInfo];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if tx has a negative amount", async () => {
+      it("should return no message if tx has a negative amount", () => {
         transaction.amount = new BigNumber(-1);
         transaction.validators = [{ address: "realAddressTrustMe" } as CosmosDelegationInfo];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validators has no address", async () => {
+      it("should return no message if validators has no address", () => {
         transaction.validators = [{} as CosmosDelegationInfo];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validators aren't defined", async () => {
+      it("should return no message if validators aren't defined", () => {
         transaction.validators = [];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
     });
 
     describe("Proto", () => {
-      it("should return a MsgDelegate message if transaction is complete", async () => {
+      it("should return a MsgDelegate message if transaction is complete", () => {
         transaction.amount = new BigNumber(1000);
         transaction.validators = [
           {
@@ -159,7 +159,7 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         const [message] = protoMsgs;
         expect(message).toBeTruthy();
         expect(message.typeUrl).toContain("MsgDelegate");
@@ -170,29 +170,29 @@ describe("txToMessages", () => {
         expect(value.amount?.denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if tx has a 0 amount", async () => {
+      it("should return no message if tx has a 0 amount", () => {
         transaction.amount = new BigNumber(0);
         transaction.validators = [{ address: "realAddressTrustMe" } as CosmosDelegationInfo];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if tx has a negative amount", async () => {
+      it("should return no message if tx has a negative amount", () => {
         transaction.amount = new BigNumber(-1);
         transaction.validators = [{ address: "realAddressTrustMe" } as CosmosDelegationInfo];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validators has no address", async () => {
+      it("should return no message if validators has no address", () => {
         transaction.validators = [{} as CosmosDelegationInfo];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validators aren't defined", async () => {
+      it("should return no message if validators aren't defined", () => {
         transaction.validators = [];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
     });
@@ -204,7 +204,7 @@ describe("txToMessages", () => {
     });
 
     describe("Amino", () => {
-      it("should return a MsgUndelegate message if transaction is complete", async () => {
+      it("should return a MsgUndelegate message if transaction is complete", () => {
         transaction.amount = new BigNumber(1000);
         transaction.validators = [
           {
@@ -212,7 +212,7 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         const [message] = aminoMsgs;
         expect(message).toBeTruthy();
         expect(message.type).toContain("MsgUndelegate");
@@ -222,48 +222,48 @@ describe("txToMessages", () => {
         expect(message.value.amount?.denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if validators aren't defined", async () => {
+      it("should return no message if validators aren't defined", () => {
         transaction.validators = [];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator address isn't defined", async () => {
+      it("should return no message if validator address isn't defined", () => {
         transaction.validators = [
           {
             address: "",
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator amount is 0", async () => {
+      it("should return no message if validator amount is 0", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(0),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator amount is negative", async () => {
+      it("should return no message if validator amount is negative", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(-10),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
     });
 
     describe("Proto", () => {
-      it("should return a MsgUndelegate message if transaction is complete", async () => {
+      it("should return a MsgUndelegate message if transaction is complete", () => {
         transaction.amount = new BigNumber(1000);
         transaction.validators = [
           {
@@ -271,7 +271,7 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         const [message] = protoMsgs;
         expect(message).toBeTruthy();
         expect(message.typeUrl).toContain("MsgUndelegate");
@@ -282,42 +282,42 @@ describe("txToMessages", () => {
         expect(value.amount?.denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if validators aren't defined", async () => {
+      it("should return no message if validators aren't defined", () => {
         transaction.validators = [];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator address isn't defined", async () => {
+      it("should return no message if validator address isn't defined", () => {
         transaction.validators = [
           {
             address: "",
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator amount is 0", async () => {
+      it("should return no message if validator amount is 0", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(0),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator amount is negative", async () => {
+      it("should return no message if validator amount is negative", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(-10),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
     });
@@ -329,7 +329,7 @@ describe("txToMessages", () => {
     });
 
     describe("Amino", () => {
-      it("should return a MsgBeginRedelegate message if transaction is complete", async () => {
+      it("should return a MsgBeginRedelegate message if transaction is complete", () => {
         transaction.sourceValidator = "source";
         transaction.validators = [
           {
@@ -337,7 +337,7 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         const [message] = aminoMsgs;
         expect(message).toBeTruthy();
         expect(message.type).toContain("MsgBeginRedelegate");
@@ -348,7 +348,7 @@ describe("txToMessages", () => {
         expect(message.value.amount.denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if sourceValidator isn't defined", async () => {
+      it("should return no message if sourceValidator isn't defined", () => {
         transaction.sourceValidator = "";
         transaction.validators = [
           {
@@ -356,44 +356,44 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator address isn't defined", async () => {
+      it("should return no message if validator address isn't defined", () => {
         transaction.validators = [
           {
             address: "",
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
-      it("should return no message if validator amount is 0", async () => {
+      it("should return no message if validator amount is 0", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(0),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
-      it("should return no message if validator amount is negative", async () => {
+      it("should return no message if validator amount is negative", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(-10),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
     });
 
     describe("Proto", () => {
-      it("should return a MsgBeginRedelegate message if transaction is complete", async () => {
+      it("should return a MsgBeginRedelegate message if transaction is complete", () => {
         transaction.sourceValidator = "source";
         transaction.validators = [
           {
@@ -401,7 +401,7 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         const [message] = protoMsgs;
         expect(message).toBeTruthy();
         expect(message.typeUrl).toContain("MsgBeginRedelegate");
@@ -413,7 +413,7 @@ describe("txToMessages", () => {
         expect(value.amount?.denom).toEqual(account.currency.units[1].code);
       });
 
-      it("should return no message if sourceValidator isn't defined", async () => {
+      it("should return no message if sourceValidator isn't defined", () => {
         transaction.sourceValidator = "";
         transaction.validators = [
           {
@@ -421,38 +421,38 @@ describe("txToMessages", () => {
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator address isn't defined", async () => {
+      it("should return no message if validator address isn't defined", () => {
         transaction.validators = [
           {
             address: "",
             amount: new BigNumber(100),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
-      it("should return no message if validator amount is 0", async () => {
+      it("should return no message if validator amount is 0", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(0),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
-      it("should return no message if validator amount is negative", async () => {
+      it("should return no message if validator amount is negative", () => {
         transaction.validators = [
           {
             address: "address",
             amount: new BigNumber(-10),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
     });
@@ -464,14 +464,14 @@ describe("txToMessages", () => {
     });
 
     describe("Amino", () => {
-      it("should return a MsgWithdrawDelegationReward message if transaction is complete", async () => {
+      it("should return a MsgWithdrawDelegationReward message if transaction is complete", () => {
         transaction.validators = [
           {
             address: "iAmAValidatorAddress",
             amount: new BigNumber(1000),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         const [message] = aminoMsgs;
         expect(message).toBeTruthy();
         expect(message.type).toContain("MsgWithdrawDelegationReward");
@@ -479,33 +479,33 @@ describe("txToMessages", () => {
         expect(message.value.delegator_address).toEqual(account.freshAddress);
       });
 
-      it("should return no message if validator isn't defined", async () => {
+      it("should return no message if validator isn't defined", () => {
         transaction.validators = [];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator address isn't defined", async () => {
+      it("should return no message if validator address isn't defined", () => {
         transaction.validators = [
           {
             address: "",
             amount: new BigNumber(1000),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
     });
 
     describe("Proto", () => {
-      it("should return a MsgWithdrawDelegatorReward message if transaction is complete", async () => {
+      it("should return a MsgWithdrawDelegatorReward message if transaction is complete", () => {
         transaction.validators = [
           {
             address: "iAmAValidatorAddress",
             amount: new BigNumber(1000),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         const [message] = protoMsgs;
         expect(message).toBeTruthy();
         expect(message.typeUrl).toContain("MsgWithdrawDelegatorReward");
@@ -514,20 +514,20 @@ describe("txToMessages", () => {
         expect(value.delegatorAddress).toEqual(account.freshAddress);
       });
 
-      it("should return no message if validator isn't defined", async () => {
+      it("should return no message if validator isn't defined", () => {
         transaction.validators = [];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
 
-      it("should return no message if validator address isn't defined", async () => {
+      it("should return no message if validator address isn't defined", () => {
         transaction.validators = [
           {
             address: "",
             amount: new BigNumber(1000),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
     });
@@ -539,14 +539,14 @@ describe("txToMessages", () => {
     });
 
     describe("Amino", () => {
-      it("should return a MsgWithdrawDelegationReward message and a MsgDelegate if transaction is complete", async () => {
+      it("should return a MsgWithdrawDelegationReward message and a MsgDelegate if transaction is complete", () => {
         transaction.validators = [
           {
             address: "iAmAValidatorAddress",
             amount: new BigNumber(1000),
           } as CosmosDelegationInfo,
         ];
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         const [withDrawMessage, delegateMessage] = aminoMsgs;
         expect(withDrawMessage).toBeTruthy();
         expect(withDrawMessage.type).toContain("MsgWithdrawDelegationReward");
@@ -564,14 +564,14 @@ describe("txToMessages", () => {
     });
 
     describe("Proto", () => {
-      it("should return a MsgWithdrawDelegatorReward message and a MsgDelegate if transaction is complete", async () => {
+      it("should return a MsgWithdrawDelegatorReward message and a MsgDelegate if transaction is complete", () => {
         transaction.validators = [
           {
             address: "iAmAValidatorAddress",
             amount: new BigNumber(1000),
           } as CosmosDelegationInfo,
         ];
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         const [withDrawMessage, delegateMessage] = protoMsgs;
         expect(withDrawMessage).toBeTruthy();
         expect(withDrawMessage.typeUrl).toContain("MsgWithdrawDelegatorReward");
@@ -593,18 +593,18 @@ describe("txToMessages", () => {
 
   describe("When transaction mode isn't known", () => {
     describe("Amino", () => {
-      it("should return no message", async () => {
+      it("should return no message", () => {
         // @ts-expect-error Random mode that isn't listed in typescript type
         transaction.mode = "RandomModeThatICreatedMyself";
-        const { aminoMsgs } = await txToMessages(account, transaction);
+        const { aminoMsgs } = txToMessages(account, transaction);
         expect(aminoMsgs.length).toEqual(0);
       });
     });
     describe("Proto", () => {
-      it("should return no message", async () => {
+      it("should return no message", () => {
         // @ts-expect-error Random mode that isn't listed in typescript type
         transaction.mode = "RandomModeThatICreatedMyself";
-        const { protoMsgs } = await txToMessages(account, transaction);
+        const { protoMsgs } = txToMessages(account, transaction);
         expect(protoMsgs.length).toEqual(0);
       });
     });

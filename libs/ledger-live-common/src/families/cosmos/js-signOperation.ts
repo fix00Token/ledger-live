@@ -31,7 +31,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           );
           const chainInstance = cryptoFactory(account.currency.id);
           o.next({ type: "device-signature-requested" });
-          const { aminoMsgs, protoMsgs } = await txToMessages(account, transaction);
+          const { aminoMsgs, protoMsgs } = txToMessages(account, transaction);
           if (transaction.fees == null || transaction.gas == null) {
             throw new Error("Transaction misses gas information");
           }
@@ -63,6 +63,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
           const { compressed_pk } = await app.getAddressAndPubKey(path, chainInstance.prefix);
           const pubKey = Buffer.from(compressed_pk).toString("base64");
 
+          // HRP is only needed when signing for ethermint chains
           const signResponseApp =
             path[1] === 60
               ? await app.sign(path, tx, chainInstance.prefix)
@@ -72,7 +73,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             Secp256k1Signature.fromDer(signResponseApp.signature).toFixedLength(),
           );
 
-          const txBytes = await buildTransaction({
+          const txBytes = buildTransaction({
             protoMsgs,
             memo: transaction.memo || "",
             pubKeyType,

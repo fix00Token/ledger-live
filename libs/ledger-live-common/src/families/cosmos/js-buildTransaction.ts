@@ -32,10 +32,10 @@ type AminoMsg = {
   readonly value: any;
 };
 
-export const txToMessages = async (
+export const txToMessages = (
   account: Account,
   transaction: Transaction,
-): Promise<{ aminoMsgs: AminoMsg[]; protoMsgs: ProtoMsg[] }> => {
+): { aminoMsgs: AminoMsg[]; protoMsgs: ProtoMsg[] } => {
   const aminoMsgs: Array<AminoMsg> = [];
   const protoMsgs: Array<ProtoMsg> = [];
   switch (transaction.mode) {
@@ -256,7 +256,7 @@ export const txToMessages = async (
   return { aminoMsgs, protoMsgs };
 };
 
-export const buildTransaction = async ({
+export const buildTransaction = ({
   protoMsgs,
   memo,
   pubKeyType,
@@ -274,7 +274,7 @@ export const buildTransaction = async ({
   gasLimit: string | undefined;
   sequence: string;
   signature: Uint8Array;
-}): Promise<Uint8Array> => {
+}): Uint8Array => {
   const signedTx = TxRaw.encode({
     bodyBytes: TxBody.encode(
       TxBody.fromPartial({

@@ -105,7 +105,9 @@ export class CosmosAPI {
       }
     } catch (e) {
       log(
+        "debug",
         "Could not fetch account info, account might have never been used, using default values instead",
+        { e },
       );
     }
 
@@ -376,7 +378,7 @@ export class CosmosAPI {
   };
 
   /** Simulate a transaction on the node to get a precise estimation of gas used */
-  simulate = async (tx_bytes: number[]): Promise<{ gasUsed: BigNumber; gasWanted: BigNumber }> => {
+  simulate = async (tx_bytes: number[]): Promise<{ gasUsed: BigNumber }> => {
     try {
       const { data } = await network({
         method: "POST",
@@ -387,7 +389,6 @@ export class CosmosAPI {
       });
 
       let gasUsed: BigNumber;
-      let gasWanted: BigNumber;
 
       if (data && data.gas_info && data.gas_info.gas_used) {
         gasUsed = new BigNumber(data.gas_info.gas_used);
@@ -395,13 +396,7 @@ export class CosmosAPI {
         throw new Error("No gas used returned from lcd");
       }
 
-      if (data && data.gas_info && data.gas_info.gas_wanted) {
-        gasWanted = new BigNumber(data.gas_info.gas_wanted);
-      } else {
-        throw new Error("No gas wanted returned from lcd");
-      }
-
-      return { gasUsed, gasWanted };
+      return { gasUsed };
     } catch (e) {
       throw new Error("Tx simulation failed");
     }

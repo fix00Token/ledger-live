@@ -55,18 +55,18 @@ export const getEstimatedFees = async (
   let gasUsed = new BigNumber(chainInstance.defaultGas);
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
-  const { protoMsgs } = await txToMessages(account, transaction);
+  const { protoMsgs } = txToMessages(account, transaction);
   const { sequence, pubKeyType, pubKey } = await cosmosAPI.getAccount(account.freshAddress);
   const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
 
-  const txBytes = await buildTransaction({
+  const txBytes = buildTransaction({
     protoMsgs,
     memo: transaction.memo || "",
     pubKeyType,
     pubKey,
     feeAmount: undefined,
     gasLimit: undefined,
-    sequence: String(sequence),
+    sequence: sequence ? sequence + "" : "0",
     signature,
   });
 
@@ -76,7 +76,7 @@ export const getEstimatedFees = async (
     const simulationResult = await cosmosAPI.simulate(txToSimulate);
     gasUsed = simulationResult.gasUsed;
   } catch (e) {
-    log("cosmos/simulate", "failed to estimate gas usage during tx simulation", {
+    log("debug", "failed to estimate gas usage during tx simulation", {
       e,
     });
   }
