@@ -303,6 +303,9 @@ export async function runWithAppSpec<T extends Transaction>(
           );
           await releaseSpeculosDevice(device.id);
           device = await createSpeculosDevice(deviceParams);
+          if (spec.onSpeculosDeviceCreated) {
+            await spec.onSpeculosDeviceCreated(device);
+          }
         }
       }
       mutationsCount = {};
