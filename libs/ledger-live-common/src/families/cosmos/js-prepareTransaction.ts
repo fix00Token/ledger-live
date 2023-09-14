@@ -73,8 +73,7 @@ export const getEstimatedFees = async (
   const txToSimulate = Array.from(Uint8Array.from(txBytes));
 
   try {
-    const simulationResult = await cosmosAPI.simulate(txToSimulate);
-    gasUsed = simulationResult.gasUsed;
+    gasUsed = await cosmosAPI.simulate(txToSimulate);
   } catch (e) {
     log("debug", "failed to estimate gas usage during tx simulation", {
       e,

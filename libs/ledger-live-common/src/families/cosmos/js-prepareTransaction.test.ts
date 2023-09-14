@@ -20,7 +20,7 @@ const transaction = {
   useAllAmount: false,
 } as unknown as Transaction;
 
-/*describe("getEstimatedFees", () => {
+describe("getEstimatedFees", () => {
   it("should return gas higher than estimate", async () => {
     const gasSimulationMock = 42000;
     // @ts-expect-error method is mocked
@@ -31,8 +31,8 @@ const transaction = {
         },
       },
     });
-    const { estimatedGas } = await getEstimatedFees(account, transaction);
-    expect(estimatedGas.gt(new BigNumber(gasSimulationMock))).toEqual(true);
+    const { gasWanted } = await getEstimatedFees(account, transaction);
+    expect(gasWanted.gt(new BigNumber(gasSimulationMock))).toEqual(true);
   });
 
   it("should calculate fees for a transaction", async () => {
@@ -44,9 +44,9 @@ const transaction = {
         },
       },
     });
-    const { estimatedFees, estimatedGas } = await getEstimatedFees(account, transaction);
-    expect(estimatedFees.gt(0)).toEqual(true);
-    expect(estimatedGas.gt(0)).toEqual(true);
+    const { gasWantedFees, gasWanted } = await getEstimatedFees(account, transaction);
+    expect(gasWantedFees.gt(0)).toEqual(true);
+    expect(gasWanted.gt(0)).toEqual(true);
   });
 });
 
@@ -147,4 +147,3 @@ describe("calculateFees", () => {
     expect(getEstimatedFeesSpy).toHaveBeenCalledTimes(2);
   });
 });
-*/

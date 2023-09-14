@@ -117,7 +117,6 @@ export function deviceActionFlow<T extends TransactionCommon>(
     }
 
     if (!finalState) {
-      console.log("Intermediate step", event.text, event.x, event.y);
       let possibleKnownStep: Step<T> | null | undefined = description.steps.find(s => {
         if (s.maxY) {
           return event.text.startsWith(s.title) && event.y < s.maxY;
