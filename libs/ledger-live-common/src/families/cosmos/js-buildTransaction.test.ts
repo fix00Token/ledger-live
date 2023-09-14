@@ -10,7 +10,7 @@ import {
 import { cosmos } from "@keplr-wallet/cosmos";
 import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 import { TxBody, TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { AuthInfo, Fee } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
+import { Fee } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 
 describe("txToMessages", () => {
   const transaction: Transaction = {} as Transaction;
