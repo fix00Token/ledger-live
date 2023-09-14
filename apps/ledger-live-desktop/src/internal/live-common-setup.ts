@@ -7,6 +7,17 @@ import { retry } from "@ledgerhq/live-common/promise";
 import TransportNodeHidSingleton from "@ledgerhq/hw-transport-node-hid-singleton";
 import TransportHttp from "@ledgerhq/hw-transport-http";
 import { DisconnectedDevice } from "@ledgerhq/errors";
+import { TraceContext, listen as listenLogs } from "@ledgerhq/logs";
+
+listenLogs(log => {
+  console.log(`🦄 INTERNAL listenLogs: ${JSON.stringify(log)}`);
+
+  process?.send?.({
+    type: "log:internal",
+    data: log,
+    requestId: "log",
+  });
+});
 
 /* eslint-disable guard-for-in */
 for (const k in process.env) {
@@ -31,8 +42,8 @@ if (getEnv("DEVICE_PROXY_URL")) {
 } else {
   registerTransportModule({
     id: "hid",
-    open: () =>
-      retry(() => TransportNodeHidSingleton.open(), {
+    open: (id: string, timeoutMs?: number, context?: TraceContext) =>
+      retry(() => TransportNodeHidSingleton.open(id, timeoutMs, context), {
         maxRetry: 4,
       }),
     disconnect: () => Promise.resolve(),

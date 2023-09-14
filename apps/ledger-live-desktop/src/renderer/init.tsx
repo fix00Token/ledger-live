@@ -46,9 +46,31 @@ import { expectOperatingSystemSupportStatus } from "~/support/os";
 import { addDevice, removeDevice, resetDevices } from "~/renderer/actions/devices";
 import { Device } from "@ledgerhq/live-common/hw/actions/types";
 import { listCachedCurrencyIds } from "./bridge/cache";
+import { LogEntry } from "winston";
+
+/**
+ * Sets up debug console printing of logs
+ *
+ * Usage: a filtering (only on console printing) on Ledger libs are possible:
+ * - VERBOSE="apdu,hw,transport,hid-verbose" : filtering on a list of log `type` separated by a `,`
+ * - VERBOSE=1 or VERBOSE=true : to print all logs
+ */
 if (process.env.VERBOSE) {
-  enableDebugLogger();
+  const everyLogs = process.env.VERBOSE === "true" || process.env.VERBOSE === "1";
+  const filters = everyLogs ? [] : process.env.VERBOSE.split(",");
+
+  // eslint-disable-next-line no-console
+  console.log(
+    `Logs console display setup: ${JSON.stringify({
+      everyLogs,
+      filters,
+      verbose: process.env.VERBOSE,
+      typeof: typeof process.env.VERBOSE,
+    })}`,
+  );
+  enableDebugLogger((log: LogEntry) => everyLogs || (log?.type && filters.includes(log.type)));
 }
+
 const rootNode = document.getElementById("react-root");
 const TAB_KEY = 9;
 async function init() {
