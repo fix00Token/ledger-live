@@ -1,4 +1,3 @@
-import { MsgDelegateEncodeObject } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import { buildTransaction, txToMessages } from "./js-buildTransaction";
 import { CosmosAccount, CosmosDelegationInfo, Transaction } from "./types";
@@ -615,8 +614,6 @@ describe("txToMessages", () => {
 
 describe("buildTransaction", () => {
   let bodyFromPartialSpy: jest.SpyInstance;
-  let bodyEncodeSpy: jest.SpyInstance;
-  let authInfoSpy: jest.SpyInstance;
   let feeFromPartialSpy: jest.SpyInstance;
   let txRawEncodeSpy: jest.SpyInstance;
 
@@ -633,8 +630,6 @@ describe("buildTransaction", () => {
 
   beforeEach(() => {
     bodyFromPartialSpy = jest.spyOn(TxBody, "fromPartial");
-    bodyEncodeSpy = jest.spyOn(TxBody, "encode");
-    authInfoSpy = jest.spyOn(AuthInfo, "encode");
     feeFromPartialSpy = jest.spyOn(Fee, "fromPartial");
     txRawEncodeSpy = jest.spyOn(TxRaw, "encode");
   });

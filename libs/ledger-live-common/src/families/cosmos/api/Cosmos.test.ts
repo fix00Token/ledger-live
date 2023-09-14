@@ -1,5 +1,5 @@
 import network from "@ledgerhq/live-network/network";
-import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import BigNumber from "bignumber.js";
 import { CosmosAPI } from "./Cosmos";
 jest.mock("@ledgerhq/live-network/network");

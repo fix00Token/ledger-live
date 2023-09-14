@@ -1,22 +1,16 @@
-import type { CosmosAccount, Transaction } from "./types";
+import type { Transaction } from "./types";
 import { Observable } from "rxjs";
 import { withDevice } from "../../hw/deviceAccess";
 import { encodeOperationId } from "../../operation";
 import { txToMessages, buildTransaction } from "./js-buildTransaction";
 import BigNumber from "bignumber.js";
-import { makeSignDoc, StdSignDoc } from "@cosmjs/launchpad";
-import type {
-  Account,
-  Operation,
-  OperationType,
-  SignOperationFnSignature,
-} from "@ledgerhq/types-live";
+import { makeSignDoc } from "@cosmjs/launchpad";
+import type { Operation, OperationType, SignOperationFnSignature } from "@ledgerhq/types-live";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
 import { sortObjectKeysDeeply } from "./helpers";
 import { Secp256k1Signature } from "@cosmjs/crypto";
 import { CosmosApp } from "@zondax/ledger-cosmos-js";
-import { calculateFees, getEstimatedFees } from "./js-prepareTransaction";
 
 const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceId, transaction }) =>
   withDevice(deviceId)(

@@ -14,7 +14,6 @@ import {
   AminoMsgUndelegate,
   AminoMsgBeginRedelegate,
   AminoMsgWithdrawDelegatorReward,
-  Coin,
 } from "@cosmjs/stargate";
 import { cosmos } from "@keplr-wallet/cosmos";
 import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
