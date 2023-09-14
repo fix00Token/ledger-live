@@ -1,6 +1,6 @@
 import { MsgDelegateEncodeObject } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
-import { txToMessages } from "./js-buildTransaction";
+import { buildTransaction, txToMessages } from "./js-buildTransaction";
 import { CosmosAccount, CosmosDelegationInfo, Transaction } from "./types";
 import {
   MsgDelegate,
@@ -10,6 +10,8 @@ import {
 
 import { cosmos } from "@keplr-wallet/cosmos";
 import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1beta1/tx";
+import { TxBody, TxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { AuthInfo, Fee } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 
 describe("txToMessages", () => {
   const transaction: Transaction = {} as Transaction;
@@ -608,5 +610,87 @@ describe("txToMessages", () => {
         expect(protoMsgs.length).toEqual(0);
       });
     });
+  });
+});
+
+describe("buildTransaction", () => {
+  let bodyFromPartialSpy: jest.SpyInstance;
+  let bodyEncodeSpy: jest.SpyInstance;
+  let authInfoSpy: jest.SpyInstance;
+  let feeFromPartialSpy: jest.SpyInstance;
+  let txRawEncodeSpy: jest.SpyInstance;
+
+  const defaultInfos = {
+    memo: "test",
+    pubKey: "pubkey",
+    sequence: "1",
+    protoMsgs: [],
+    pubKeyType: "type",
+    signature: new Uint8Array(),
+    feeAmount: undefined,
+    gasLimit: undefined,
+  };
+
+  beforeEach(() => {
+    bodyFromPartialSpy = jest.spyOn(TxBody, "fromPartial");
+    bodyEncodeSpy = jest.spyOn(TxBody, "encode");
+    authInfoSpy = jest.spyOn(AuthInfo, "encode");
+    feeFromPartialSpy = jest.spyOn(Fee, "fromPartial");
+    txRawEncodeSpy = jest.spyOn(TxRaw, "encode");
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should set memo", () => {
+    buildTransaction({ ...defaultInfos, memo: "toto" });
+    expect(bodyFromPartialSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        memo: "toto",
+      }),
+    );
+  });
+
+  it("should set gasLimit", () => {
+    buildTransaction({ ...defaultInfos, gasLimit: "10" });
+    expect(feeFromPartialSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        gasLimit: "10",
+      }),
+    );
+  });
+
+  it("should set messages", () => {
+    buildTransaction({
+      ...defaultInfos,
+      protoMsgs: [
+        {
+          typeUrl: "typeUrl",
+          value: new Uint8Array(),
+        },
+      ],
+    });
+    expect(bodyFromPartialSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messages: [
+          {
+            typeUrl: "typeUrl",
+            value: new Uint8Array(),
+          },
+        ],
+      }),
+    );
+  });
+
+  it("should set signature", () => {
+    const signature = new Uint8Array([8]);
+    buildTransaction({
+      ...defaultInfos,
+      signature,
+    });
+    expect(txRawEncodeSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ signatures: [signature] }),
+    );
   });
 });
