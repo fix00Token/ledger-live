@@ -276,11 +276,7 @@ const UpdateModal = ({
               renderChildren={undefined}
             >
               {steps.map(step => (
-                <FlowStepper.Indexed.Step
-                  key={step.id}
-                  itemKey={step.id}
-                  label={step.label as string}
-                >
+                <FlowStepper.Indexed.Step key={step.id} itemKey={step.id} label={step.label}>
                   <Flex
                     flex={1}
                     flexDirection="column"
