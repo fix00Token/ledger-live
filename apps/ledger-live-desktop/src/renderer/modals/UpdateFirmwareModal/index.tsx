@@ -17,6 +17,7 @@ import { Divider, Flex, FlowStepper, Text } from "@ledgerhq/react-ui";
 import Disclaimer from "./Disclaimer";
 import { SideDrawer } from "~/renderer/components/SideDrawer";
 import { useTheme } from "styled-components";
+import Cancel from "./Cancel";
 
 type MaybeError = Error | undefined | null;
 
@@ -106,6 +107,15 @@ const UpdateModal = ({
   const [CLSBackup, setCLSBackup] = useState<string>();
   const [updatedDeviceInfo, setUpdatedDeviceInfo] = useState<DeviceInfo | undefined>(undefined);
   const withFinal = useMemo(() => hasFinalFirmware(firmware?.final), [firmware]);
+  const [cancel, setCancel] = useState<boolean>();
+
+  const onRequestCancel = useCallback(() => {
+    setCancel(state => !state);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) setCancel(false);
+  }, [isOpen]);
 
   const createSteps = useCallback(
     ({ withResetStep }: { withResetStep: boolean }) => {
@@ -231,7 +241,7 @@ const UpdateModal = ({
   return (
     <SideDrawer
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={onRequestCancel}
       direction="left"
       preventBackdropClick
       forceDisableFocusTrap
@@ -251,7 +261,10 @@ const UpdateModal = ({
           <Text alignSelf="center" variant="h5Inter">
             {t("manager.modal.title", { productName: deviceModel.productName })}
           </Text>
-          {showDisclaimer ? (
+
+          {cancel ? (
+            <Cancel onContinue={() => setCancel(false)} onCancel={() => onRequestClose()} />
+          ) : showDisclaimer ? (
             <Disclaimer onContinue={() => setShowDisclaimer(false)} t={t} firmware={firmware} />
           ) : (
             <FlowStepper.Indexed
