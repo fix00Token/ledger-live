@@ -110,8 +110,8 @@ const UpdateModal = ({
   const [cancel, setCancel] = useState<boolean>();
 
   const onRequestCancel = useCallback(() => {
-    setCancel(state => !state);
-  }, []);
+    showDisclaimer ? onRequestClose() : setCancel(state => !state);
+  }, [showDisclaimer, onRequestClose]);
 
   useEffect(() => {
     if (isOpen) setCancel(false);
