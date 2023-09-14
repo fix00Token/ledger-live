@@ -148,37 +148,43 @@ export default class TransportNodeHidNoEvents extends Transport {
    * @param apdu
    * @returns a promise of apdu response
    */
-  async exchange(apdu: Buffer): Promise<Buffer> {
+  async exchange(
+    apdu: Buffer,
+    { abortTimeoutMs }: { abortTimeoutMs?: number } = {},
+  ): Promise<Buffer> {
     const tracer = this.tracer.withAdditionalContext({
       function: "exchange",
     });
-    tracer.trace("Exchanging APDU ...");
+    tracer.trace("Exchanging APDU ...", { abortTimeoutMs });
 
-    const b = await this.exchangeAtomicImpl(async () => {
-      const { channel, packetSize } = this;
-      tracer.withType("apdu").trace(`=> ${apdu.toString("hex")}`);
+    const b = await this.abortableExchangeAtomicImpl(
+      async () => {
+        const { channel, packetSize } = this;
+        tracer.withType("apdu").trace(`=> ${apdu.toString("hex")}`);
 
-      const framing = hidFraming(channel, packetSize);
+        const framing = hidFraming(channel, packetSize);
 
-      // Write...
-      const blocks = framing.makeBlocks(apdu);
+        // Write...
+        const blocks = framing.makeBlocks(apdu);
 
-      for (let i = 0; i < blocks.length; i++) {
-        await this.writeHID(blocks[i]);
-      }
+        for (let i = 0; i < blocks.length; i++) {
+          await this.writeHID(blocks[i]);
+        }
 
-      // Read...
-      let result;
-      let acc;
+        // Read...
+        let result;
+        let acc;
 
-      while (!(result = framing.getReducedResult(acc))) {
-        const buffer = await this.readHID();
-        acc = framing.reduceResponse(acc, buffer);
-      }
+        while (!(result = framing.getReducedResult(acc))) {
+          const buffer = await this.readHID();
+          acc = framing.reduceResponse(acc, buffer);
+        }
 
-      tracer.withType("apdu").trace(`<= ${result.toString("hex")}`);
-      return result;
-    });
+        tracer.withType("apdu").trace(`<= ${result.toString("hex")}`);
+        return result;
+      },
+      { abortTimeoutMs },
+    );
 
     return b as Buffer;
   }

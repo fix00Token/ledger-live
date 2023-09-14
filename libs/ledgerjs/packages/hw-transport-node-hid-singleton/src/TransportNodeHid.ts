@@ -198,9 +198,12 @@ export default class TransportNodeHidSingleton extends TransportNodeHidNoEvents 
    * @param apdu
    * @returns a promise of apdu response
    */
-  async exchange(apdu: Buffer): Promise<Buffer> {
+  async exchange(
+    apdu: Buffer,
+    { abortTimeoutMs }: { abortTimeoutMs?: number } = {},
+  ): Promise<Buffer> {
     clearDisconnectTimeout();
-    const result = await super.exchange(apdu);
+    const result = await super.exchange(apdu, { abortTimeoutMs });
     setDisconnectTimeout();
     return result;
   }
