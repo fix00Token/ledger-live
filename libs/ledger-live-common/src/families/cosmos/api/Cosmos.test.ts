@@ -33,7 +33,7 @@ describe("CosmosApi", () => {
         },
       } as AxiosResponse);
 
-      const account = await cosmosApi.getAccount("addr");
+      const account = await cosmosApi.getAccount("addr", "default");
       expect(account.accountNumber).toEqual(2);
       expect(account.sequence).toEqual(42);
       expect(account.pubKey).toEqual("k2");
@@ -47,7 +47,7 @@ describe("CosmosApi", () => {
         },
       } as AxiosResponse);
 
-      const account = await cosmosApi.getAccount("addr");
+      const account = await cosmosApi.getAccount("addr", "default");
       expect(account.accountNumber).toEqual(1);
       expect(account.sequence).toEqual(0);
       expect(account.pubKey).toEqual("k");
@@ -58,8 +58,16 @@ describe("CosmosApi", () => {
       mockedNetwork.mockImplementation(() => {
         throw new Error();
       });
-      const account = await cosmosApi.getAccount("addr");
+      const account = await cosmosApi.getAccount("addr", "default");
       expect(account.sequence).toEqual(0);
+    });
+
+    it("should return default pubkeytype value if network fails", async () => {
+      mockedNetwork.mockImplementation(() => {
+        throw new Error();
+      });
+      const account = await cosmosApi.getAccount("addr", "default");
+      expect(account.pubKeyType).toEqual("default");
     });
   });
 

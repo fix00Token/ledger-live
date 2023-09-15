@@ -5,6 +5,7 @@ import { Operation } from "@ledgerhq/types-live";
 import BigNumber from "bignumber.js";
 import { patchOperationWithHash } from "../../../operation";
 import cryptoFactory from "../chain/chain";
+import cosmosBase from "../chain/cosmosBase";
 import {
   CosmosDelegation,
   CosmosDelegationStatus,
@@ -16,9 +17,11 @@ import {
 export class CosmosAPI {
   protected defaultEndpoint: string;
   private version: string;
+  private chainInstance: cosmosBase;
 
   constructor(currencyId: string) {
     const crypto = cryptoFactory(currencyId);
+    this.chainInstance = crypto;
     this.defaultEndpoint = crypto.lcd;
     this.version = crypto.version;
   }
@@ -47,7 +50,7 @@ export class CosmosAPI {
         unbondings,
         withdrawAddress,
       ] = await Promise.all([
-        this.getAccount(address),
+        this.getAccount(address, this.chainInstance.defaultPubKeyType),
         this.getAllBalances(address, currency),
         this.getHeight(),
         this.getTransactions(address, 100),
@@ -74,11 +77,12 @@ export class CosmosAPI {
 
   getAccount = async (
     address: string,
+    defaultPubKeyType: string,
   ): Promise<{ accountNumber: number; sequence: number; pubKeyType: string; pubKey: string }> => {
     const accountData = {
       accountNumber: 0,
       sequence: 0,
-      pubKeyType: "/cosmos.crypto.secp256k1.PubKey",
+      pubKeyType: defaultPubKeyType,
       pubKey: "",
     };
 

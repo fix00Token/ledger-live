@@ -14,6 +14,7 @@ class Injective extends CosmosBase {
     this.unbondingPeriod = 21;
     this.prefix = "inj";
     this.validatorPrefix = `${this.prefix}valoper`;
+    this.defaultPubKeyType = "/injective.crypto.v1beta1.ethsecp256k1.PubKey";
   }
 }
 

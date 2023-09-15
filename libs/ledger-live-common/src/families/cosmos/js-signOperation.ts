@@ -20,10 +20,12 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
 
         async function main() {
           const cosmosAPI = new CosmosAPI(account.currency.id);
+          const chainInstance = cryptoFactory(account.currency.id);
+
           const { accountNumber, sequence, pubKeyType } = await cosmosAPI.getAccount(
             account.freshAddress,
+            chainInstance.defaultPubKeyType,
           );
-          const chainInstance = cryptoFactory(account.currency.id);
           o.next({ type: "device-signature-requested" });
           const { aminoMsgs, protoMsgs } = txToMessages(account, transaction);
           if (transaction.fees == null || transaction.gas == null) {

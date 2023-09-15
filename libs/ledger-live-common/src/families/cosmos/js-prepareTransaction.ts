@@ -56,7 +56,10 @@ export const getEstimatedFees = async (
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
   const { protoMsgs } = txToMessages(account, transaction);
-  const { sequence, pubKeyType, pubKey } = await cosmosAPI.getAccount(account.freshAddress);
+  const { sequence, pubKeyType, pubKey } = await cosmosAPI.getAccount(
+    account.freshAddress,
+    chainInstance.defaultPubKeyType,
+  );
   const signature = new Uint8Array(Buffer.from(account.seedIdentifier, "hex"));
 
   const txBytes = buildTransaction({
