@@ -4,13 +4,12 @@ import { withDevice } from "../../hw/deviceAccess";
 import { encodeOperationId } from "../../operation";
 import { txToMessages, buildTransaction } from "./js-buildTransaction";
 import BigNumber from "bignumber.js";
-import { makeSignDoc } from "@cosmjs/launchpad";
 import type { Operation, OperationType, SignOperationFnSignature } from "@ledgerhq/types-live";
 import { CosmosAPI } from "./api/Cosmos";
 import cryptoFactory from "./chain/chain";
-import { sortObjectKeysDeeply } from "./helpers";
 import { Secp256k1Signature } from "@cosmjs/crypto";
 import { CosmosApp } from "@zondax/ledger-cosmos-js";
+import { serializeSignDoc, makeSignDoc } from "@cosmjs/amino";
 
 const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceId, transaction }) =>
   withDevice(deviceId)(
@@ -52,7 +51,7 @@ const signOperation: SignOperationFnSignature<Transaction> = ({ account, deviceI
             accountNumber.toString(),
             sequence.toString(),
           );
-          const tx = Buffer.from(JSON.stringify(sortObjectKeysDeeply(signDoc)), "utf-8");
+          const tx = Buffer.from(serializeSignDoc(signDoc));
           const app = new CosmosApp(transport);
           const path = account.freshAddressPath.split("/").map(p => parseInt(p.replace("'", "")));
 

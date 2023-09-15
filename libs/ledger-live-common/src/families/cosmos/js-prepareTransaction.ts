@@ -51,7 +51,6 @@ export const getEstimatedFees = async (
   gasWantedFees: BigNumber;
 }> => {
   const chainInstance = cryptoFactory(account.currency.id);
-  let gasWanted = new BigNumber(chainInstance.defaultGas);
   let gasUsed = new BigNumber(chainInstance.defaultGas);
 
   const cosmosAPI = new CosmosAPI(account.currency.id);
@@ -83,7 +82,9 @@ export const getEstimatedFees = async (
     });
   }
 
-  gasWanted = gasUsed.times(getEnv("COSMOS_GAS_AMPLIFIER")).integerValue(BigNumber.ROUND_CEIL);
+  const gasWanted = gasUsed
+    .times(getEnv("COSMOS_GAS_AMPLIFIER"))
+    .integerValue(BigNumber.ROUND_CEIL);
 
   const gasWantedFees = gasWanted
     .times(chainInstance.minGasPrice)

@@ -13,27 +13,3 @@ export const getMainMessage = (messages: CosmosMessage[]): CosmosMessage => {
     .sort((a, b) => messagePriorities.indexOf(a.type) - messagePriorities.indexOf(b.type));
   return sortedTypes[0];
 };
-
-export const sortObjectKeysDeeply = src => {
-  let out;
-
-  if (Array.isArray(src)) {
-    return src.map(function (item) {
-      return sortObjectKeysDeeply(item);
-    });
-  }
-
-  if (typeof src === "object") {
-    out = {};
-
-    Object.keys(src)
-      .sort((a, b) => a.localeCompare(b))
-      .forEach(function (key) {
-        out[key] = sortObjectKeysDeeply(src[key]);
-      });
-
-    return out;
-  }
-
-  return src;
-};
