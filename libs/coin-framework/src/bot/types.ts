@@ -151,6 +151,7 @@ export type AppSpec<T extends TransactionCommon> = {
   allowEmptyAccounts?: boolean;
   // do not keep operations in accounts (Cosmos family case)
   skipOperationHistory?: boolean;
+  // executed when speculos device is created, used for example to enable expert mode on cosmos nano app
   onSpeculosDeviceCreated?: (device: {
     transport: SpeculosTransport;
     id: string;
